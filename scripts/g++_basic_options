@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Part of 'bashutils' git repo
+
+#######################################
+# Used to show basic options for gnu c++ compiler.
+# Outputs:
+#   Basic compilation options 
+#######################################
+g++_basic_options () {
+    g++ --help | grep -e "-o\s\|-[c]\s\|-[S]\|-[E]"
+    return
+}

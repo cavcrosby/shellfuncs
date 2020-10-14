@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Part of 'bashutils' git repo
+# Inspired by: https://kb.vmware.com/s/article/287
+
+#######################################
+# Temporarily assigns vmnet device to 'adm' group so 
+# promiscuous mode will work for users in that group
+# using VMware's esxi.
+# Arguments:
+#   $1: Positive integer denoting vmnet virtual network
+#######################################
+enable_promiscuous_mode_esxi() {
+    sudo chgrp adm "/dev/vmnet${1}"
+    sudo chmod 660 "/dev/vmnet${1}"
+}
