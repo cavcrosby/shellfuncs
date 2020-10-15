@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#
+# Part of 'shellfuncs' git repo
 
 #######################################
 # Used to run the bootinfoscript utility
@@ -8,8 +8,8 @@
 #   Hard disk information in relation to bootloaders
 #######################################
 bootinfoscript () {
-    cd "$(dirname "$(which bootinfoscript)")";
+    cd "$(dirname "$(which bootinfoscript)")" || exit;
     sudo ./bootinfoscript --stdout; 
-    cd - > /dev/null;
+    cd - > /dev/null || exit;
     return
 }
