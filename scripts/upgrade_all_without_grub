@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Part of 'bashutils' git repo
+# Part of 'shellfuncs' git repo
 
 #######################################
 # Used to upgrade all deb packages except those
