@@ -1,0 +1,48 @@
+# Part of 'shellfuncs' git repo
+# TO BE INSERTED INTO BASHRC, WHICH CONTAINS SHABANG
+
+WARNING="\x1b[1;33m [WARNING]:"
+#######################################
+# Loads each 'shellfuncs' script into from SCRIPTS_PATH
+# the current shell session.
+# Globals:
+#   SHELLFUNCS_REPO_PATH
+#   SCRIPTS_PATH
+#   WARNING
+# Outputs:
+#   WARNING: If shellfuncs repo could not be found
+#######################################
+load_shellfuncs () {
+    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+        echo "Found "
+        SCRIPT_NAMES="$(ls -1 "$SCRIPTS_PATH")";
+        # shellcheck source=/dev/null
+        for script_name in $SCRIPT_NAMES; do
+            source "$SCRIPTS_PATH/$script_name";
+        done
+    else
+        echo "$WARNING 'shellfuncs' repo could not be found, failed to load scripts"
+    fi
+    return
+}
+
+#######################################
+# Updates 'shellfuncs' repo
+# Globals:
+#   SHELLFUNCS_REPO_PATH
+#   WARNING
+# Outputs:
+#   WARNING: If shellfuncs repo could not be found
+#######################################
+update_shellfuncs () {
+    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+        cd "$SHELLFUNCS_REPO_PATH" || exit;
+        git pull
+    else
+        echo "$WARNING 'shellfuncs' repo could not be found, failed to update scripts"
+    fi
+    return
+}
+
+update_shellfuncs
+load_shellfuncs
