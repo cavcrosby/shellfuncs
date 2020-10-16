@@ -7,7 +7,7 @@
 # Outputs:
 #   Basic compilation options 
 #######################################
-g++_basic_options () {
+shellfuncs_g++_basic_options () {
     g++ --help | grep -e "-o\s\|-[c]\s\|-[S]\|-[E]"
     return
 }

@@ -10,7 +10,7 @@
 #   Directories where preprocessor looks for 
 #   includes
 #######################################
-g++_includes () {
+shellfuncs_g++_includes () {
     "$(gcc -print-prog-name=cc1plus)" -v -E - < /dev/null
     return
 }
