@@ -14,7 +14,7 @@ fi
 LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
 SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
 
-git clone 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" > /dev/null
+git clone 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" 2> /dev/null
 {
     echo ""
     echo "# Part of 'shellfuncs' git repo"
