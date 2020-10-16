@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Part of 'shellfuncs' git repo
+# Inspired by: https://stackoverflow.com/questions/344317/where-does-gcc-look-for-c-and-c-header-files
+
+#######################################
+# Prints where the c++ preprocessor looks for 
+# includes.
+# Outputs:
+#   Directories where preprocessor looks for 
+#   includes
+#######################################
+g++_includes () {
+    "$(gcc -print-prog-name=cc1plus)" -v -E - < /dev/null
+    return
+}
