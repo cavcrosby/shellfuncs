@@ -10,8 +10,8 @@
 #   Hard disk information in relation to bootloaders
 #######################################
 shellfuncs_bootinfoscript () {
-    cd "$(dirname "$(which bootinfoscript)")" || exit;
-    sudo ./bootinfoscript --stdout; 
-    cd - > /dev/null || exit;
+    cd "$(dirname "$(which bootinfoscript)")" || exit
+    sudo ./bootinfoscript --stdout
+    cd - > /dev/null || exit
     return
 }

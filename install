@@ -14,7 +14,7 @@ fi
 LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
 SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
 
-git clone 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" 2> /dev/null
+git clone 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" > /dev/null
 {
     echo ""
     echo "# Part of 'shellfuncs' git repo"
@@ -65,7 +65,7 @@ update_shellfuncs () {
         cd "$SHELLFUNCS_REPO_PATH" || exit
         git pull > /dev/null
         echo -e "$SUCCESS Updated 'shellfuncs' repo"
-        cd - > /dev/null
+        cd - > /dev/null || exit
     else
         echo -e "$ERROR 'shellfuncs' repo could not be found, failed to update scripts"
     fi
