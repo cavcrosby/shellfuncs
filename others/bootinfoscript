@@ -1,9 +1,11 @@
 #!/bin/bash
 #
 # Part of 'shellfuncs' git repo
+# Executable can be found here: https://sourceforge.net/projects/bootinfoscript/
 
 #######################################
-# Used to run the bootinfoscript utility
+# Used to run the bootinfoscript utility,
+# assumes 'bootinfoscript' can be found through PATH.
 # Outputs:
 #   Hard disk information in relation to bootloaders
 #######################################
