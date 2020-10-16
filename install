@@ -9,7 +9,7 @@ LOCAL_REPO_NAME="shellfuncs"
 SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
 
 if ! [[ "$DEV_ENV_PATH" ]]; then
-    read -r -p "What is the development environment path? ==> " DEV_ENV_PATH
+    read -r -p "What is the development environment path? ==> " DEV_ENV_PATH <&1
 fi
 LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
 SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
