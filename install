@@ -8,7 +8,7 @@ BASHRC_PATH="$HOME"/.bashrc
 LOCAL_REPO_NAME="shellfuncs"
 SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
 
-if [[ -z "$DEV_ENV_PATH" ]]; then
+if [[ "$DEV_ENV_PATH" ]]; then
     read -r -p "What is the development environment path? ==> " DEV_ENV_PATH
 fi
 LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
