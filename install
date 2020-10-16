@@ -63,7 +63,7 @@ load_shellfuncs () {
 update_shellfuncs () {
     if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
         cd "$SHELLFUNCS_REPO_PATH" || exit
-        git pull > /dev/null
+        git pull --quiet
         echo -e "$SUCCESS Updated 'shellfuncs' repo"
         cd - > /dev/null || exit
     else
