@@ -1,0 +1,80 @@
+#!/bin/bash
+# Small setup script that enables the
+# user to pull scripts as shell functions in their
+# shell session.
+# Usage: curl https://github.com/reap2sow1/shellfuncs/install | bash
+set -e
+BASHRC_PATH="$HOME"/.bashrc
+LOCAL_REPO_NAME="shellfuncs"
+SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
+
+if [[ -z "$DEV_ENV_PATH" ]]; then
+    read -r -p "What is the development environment path? ==> " DEV_ENV_PATH
+fi
+LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
+SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
+
+git clone 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" > /dev/null
+{
+    echo ""
+    echo "# Part of 'shellfuncs' git repo"
+    echo "# TO BE INSERTED INTO BASHRC"
+    echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
+    echo "SCRIPTS_PATH=$SCRIPTS_PATH"
+    echo ""
+    echo "SUCCESS=\"${SUCCESS}\""
+    cat << '_EOF_'
+WARNING="\033[1;33m[WARNING]:\033[0m"
+ERROR="\033[1;31m[ERROR]:\033[0m"
+#######################################
+# Loads each 'shellfuncs' script into from SCRIPTS_PATH
+# the current shell session.
+# Globals:
+#   SHELLFUNCS_REPO_PATH
+#   SCRIPTS_PATH
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   ERROR: If shellfuncs repo could not be found
+#######################################
+load_shellfuncs () {
+    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+        SCRIPT_NAMES="$(ls -1 "$SCRIPTS_PATH")"
+        # shellcheck source=/dev/null
+        for script_name in $SCRIPT_NAMES; do
+            source "$SCRIPTS_PATH/$script_name"
+        done
+        echo -e "$SUCCESS Loaded 'shellfuncs' repo scripts"
+    else
+        echo -e "$ERROR 'shellfuncs' repo could not be found, failed to load scripts"
+    fi
+    return
+}
+
+#######################################
+# Updates 'shellfuncs' repo
+# Globals:
+#   SHELLFUNCS_REPO_PATH
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   ERROR: If shellfuncs repo could not be found
+#######################################
+update_shellfuncs () {
+    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+        cd "$SHELLFUNCS_REPO_PATH" || exit;
+        git pull > /dev/null
+        echo -e "$SUCCESS Updated 'shellfuncs' repo"
+    else
+        echo -e "$ERROR 'shellfuncs' repo could not be found, failed to update scripts"
+    fi
+    return
+}
+
+update_shellfuncs
+load_shellfuncs
+_EOF_
+
+} >> "$BASHRC_PATH"
+
+echo -e "$SUCCESS Install was successfull! Restart your shell session to pull in/update scripts"
