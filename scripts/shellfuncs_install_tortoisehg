@@ -4,8 +4,8 @@
 # Inspired by: https://askubuntu.com/questions/1182598/how-to-install-tortoisehg-on-ubuntu-19-10#answer-1246183
 
 #######################################
-# Installs tortoisehg for the desktop, at moment 
-# the current distros have be tested with this script:
+# Installs tortoisehg for the desktop. This script has 
+# been tested to work on the following distros:
 # Pop!_OS 20.04 LTS,
 # Outputs:
 #   - Installation output from pip3/apt/make
