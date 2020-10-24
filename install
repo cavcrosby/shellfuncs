@@ -8,10 +8,10 @@ BASHRC_PATH="$HOME"/.bashrc
 LOCAL_REPO_NAME="shellfuncs"
 SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
 
-if ! [[ "$DEV_ENV_PATH" ]]; then
-    read -r -e -p "What is the development environment path? ==> " -i "$HOME" DEV_ENV_PATH <&1
+if ! [[ "$GIT_REPOS_PATH" ]]; then
+    read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
-LOCAL_REPO_PATH="$DEV_ENV_PATH/$LOCAL_REPO_NAME"
+LOCAL_REPO_PATH="$GIT_REPOS_PATH/$LOCAL_REPO_NAME"
 SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
 
 git clone --quiet 'https://github.com/reap2sow1/shellfuncs' "$LOCAL_REPO_PATH" > /dev/null
