@@ -9,7 +9,7 @@ BASHRC_PATH="$HOME"/.bashrc
     echo ""
     cat << '_EOF_'
 # adds git repository directory as env var
-export GIT_REPOS_PATH=$HOME/git
+export GIT_REPOS_PATH="$HOME"/git
 
 # set if use custom prompt
 custom_prompt=1
