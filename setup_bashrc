@@ -1,6 +1,7 @@
 #!/bin/bash
 # Small setup script to include customs
 # into the bashrc file.
+# Usage: curl https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/setup_bashrc | bash
 set -e
 BASHRC_PATH="$HOME"/.bashrc
 
@@ -25,6 +26,4 @@ _EOF_
 
 } >> "$BASHRC_PATH"
 
-# shellcheck source=/dev/null
-source "$BASHRC_PATH"
 echo -e "'setup_bashrc' was successfull! Either restart shell session or 'source .bashrc' to re-read shell configs"
