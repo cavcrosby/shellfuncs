@@ -14,7 +14,7 @@ export GIT_REPOS_PATH="$HOME"/git
 # set if use custom prompt
 custom_prompt=1
 
-# ANSI escape code sequences for status messages character coloring
+# ANSI escape code sequences for status messages with character coloring
 export SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
 export WARNING="\033[1;33m[WARNING]:\033[0m"
 export ERROR="\033[1;31m[ERROR]:\033[0m"

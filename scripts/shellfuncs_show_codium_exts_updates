@@ -9,9 +9,9 @@
 # https://marketplace.visualstudio.com/vscode
 #
 # Outputs:
-#   Extension name with version update number,
+#   Extension name with the newer/local version number,
 #   it is assumed the marketplace version will never
-#   be lesser than what is locally installed.
+#   be older than what is locally installed.
 #######################################
 shellfuncs_show_codium_exts_updates () {
     for extension in $(codium --list-extensions --show-versions); do
