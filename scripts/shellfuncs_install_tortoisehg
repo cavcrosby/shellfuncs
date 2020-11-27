@@ -110,7 +110,7 @@ _EOF_
 }
 
 _shellfuncs_install_tortoisehg_cleanup (){
-    DENTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
-    [[ -d "$DENTINATION_DIR_BASENAME" ]] || cd ..
-    [[ -d "$DENTINATION_DIR_BASENAME" ]] && rm -rf "$DESTINATION_DIR_PATH"
+    DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
+    [[ -d "$DESTINATION_DIR_BASENAME" ]] || cd ..
+    [[ -d "$DESTINATION_DIR_BASENAME" ]] && rm -rf "$DESTINATION_DIR_PATH"
 }
