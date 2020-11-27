@@ -1,0 +1,30 @@
+#!/bin/bash
+# Small setup script to include customs
+# into the bashrc file.
+set -e
+BASHRC_PATH="$HOME"/.bashrc
+
+{   
+    echo ""
+    cat << '_EOF_'
+# adds git repository directory as env var
+export GIT_REPOS_PATH=$HOME/git
+
+# set if use custom prompt
+custom_prompt=1
+
+# ANSI escape code sequences for status messages character coloring
+export SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
+export WARNING="\033[1;33m[WARNING]:\033[0m"
+export ERROR="\033[1;31m[ERROR]:\033[0m"
+    
+if [ "$custom_prompt" ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]../\W\[\033[00m\]\$ '
+fi
+_EOF_
+
+} >> "$BASHRC_PATH"
+
+# shellcheck source=/dev/null
+source "$BASHRC_PATH"
+echo -e "'setup_bashrc' was successfull! Either restart shell session or 'source .bashrc' to re-read shell configs"
