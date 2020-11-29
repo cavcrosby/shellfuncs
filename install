@@ -4,7 +4,6 @@
 # shell session.
 # Usage: curl https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
 set -e
-BASHRC_PATH="$HOME"/.bashrc
 LOCAL_REPO_NAME="shellfuncs"
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
 
