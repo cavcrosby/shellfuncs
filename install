@@ -56,7 +56,7 @@ read -r -e -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
 if [ "${RE_INSTALL_REPLY,,}" == "y" ]; then
     if [ -d "$LOCAL_REPO_PATH" ]; then
         echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME still exists on the local file system"
-        echo "$ERROR $DOTFILES_REPO_NAME is the 'dotfiles' repo, and it must be reinstalled first!"
+        echo -e "$ERROR $DOTFILES_REPO_NAME is the 'dotfiles' repo, and it must be reinstalled first!"
         read -r -e -p "Has the 'dotfiles' repo been reinstalled, y/n? (n) " DOTFILES_REINSTALLED_REPLY <&1
         if [ "${DOTFILES_REINSTALLED_REPLY,,}" == "y" ]; then
             rm -rf "$LOCAL_REPO_PATH"
