@@ -4,14 +4,17 @@
 # shell session.
 # Usage: curl --silent https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
 set -e
-LOCAL_REPO_NAME="shellfuncs"
+# shellcheck disable=SC1091
+source "./.env"
+
+# where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
 
 if ! [[ "$GIT_REPOS_PATH" ]]; then
     read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
-LOCAL_REPO_PATH="$GIT_REPOS_PATH/$LOCAL_REPO_NAME"
-SCRIPTS_PATH="$LOCAL_REPO_PATH/scripts"
+LOCAL_REPO_PATH="${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}"
+SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
 
 git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 {
