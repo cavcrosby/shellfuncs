@@ -6,46 +6,20 @@
 set -e
 PWD="$(pwd)"
 PROGRAM_NAME="install"
-ENV_FILE_NAME=".env"
-TEMP_DIR_NAME="${PROGRAM_NAME}-temp"
-ENV_REMOTE_URL='https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/.env'
+LOCAL_REPO_NAME="shellfuncs"
+SCRIPTS_DIR_NAME="scripts"
 # where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
-
-if [ "$PWD" != "$HOME" ]; then
-    # main reason is to avoid filemode permissions issues
-    echo "${PROGRAM_NAME}: re-run this script in $HOME (assuming you haven't changed this!), to run this correctly"
-    exit 1
-fi
-
-if [ -z "$(which curl)" ]; then
-    echo "${PROGRAM_NAME}: curl cannot be found on the PATH!"
-    exit 1
-fi
 
 if [ -z "$(which git)" ]; then
     echo "${PROGRAM_NAME}: git cannot be found on the PATH!"
     exit 1
 fi
 
-mkdir "$TEMP_DIR_NAME" || exit 1
-cd "$TEMP_DIR_NAME" || exit 1
-
-# --fail just means to 'fail' silently without a http status code
-if ! curl --silent --fail "$ENV_REMOTE_URL" -o "$ENV_FILE_NAME"; then
-    echo "${PROGRAM_NAME}: could not fetch $ENV_FILE_NAME from url!"
-    exit 1
-fi
-
-# shellcheck disable=SC1090
-source "./${ENV_FILE_NAME}"
-rm "./${ENV_FILE_NAME}"
-cd ..
-rmdir "$TEMP_DIR_NAME"
-
 if ! [[ "$GIT_REPOS_PATH" ]]; then
     read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
+
 LOCAL_REPO_PATH="${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}"
 SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
 

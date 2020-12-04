@@ -16,7 +16,6 @@
 #######################################
 shellfuncs_less () {
     # shellcheck disable=SC1091
-    source "../.env"
-    less "${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}/${SCRIPTS_DIR_NAME}/${1}"
+    less "${SHELLFUNCS_REPO_PATH}/${SCRIPTS_PATH}/${1}"
     return
 }
