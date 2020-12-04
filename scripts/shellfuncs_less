@@ -7,15 +7,13 @@
 # scripts. Perhaps in the future, arguments past 1
 # could be passed in as additional options to less (e.g. --foo, -b).
 # Globals:
-#   GIT_REPOS_PATH
-#   LOCAL_REPO_NAME
-#   SCRIPTS_DIR_NAME
+#   SCRIPTS_PATH
 # Arguments:
 #   $1: the shellfuncs script name to pass as 
 #       an argument to less
 #######################################
 shellfuncs_less () {
     # shellcheck disable=SC1091
-    less "${SHELLFUNCS_REPO_PATH}/${SCRIPTS_PATH}/${1}"
+    less "${SCRIPTS_PATH}/${1}"
     return
 }
