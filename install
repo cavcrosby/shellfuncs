@@ -8,6 +8,7 @@ PWD="$(pwd)"
 PROGRAM_NAME="install"
 LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
+OTHER_SCRIPTS_DIR_NAME="others"
 # where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
 
@@ -22,6 +23,7 @@ fi
 
 LOCAL_REPO_PATH="${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}"
 SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
+OTHER_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${OTHER_SCRIPTS_DIR_NAME}"
 
 # shellcheck disable=2034
 read -r -e -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
@@ -49,6 +51,19 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
     echo "# TO BE INSERTED INTO BASHRC"
     echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
     echo "SCRIPTS_PATH=$SCRIPTS_PATH"
+    echo "OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
+    if [ -z "$SUCCESS" ] || [ -z "$ERROR" ] || [ -z "$WARNING" ]; then
+        echo "# ANSI escape code sequences for status messages with character coloring"
+    fi
+    if [ -z "$SUCCESS" ]; then
+        echo 'export SUCCESS="\033[1;32m[SUCCESS]:\033[0m"'
+    fi
+    if [ -z "$WARNING" ]; then
+        echo 'export WARNING="\033[1;33m[WARNING]:\033[0m"'
+    fi
+    if [ -z "$ERROR" ]; then
+        echo 'export ERROR="\033[1;31m[ERROR]:\033[0m"'
+    fi
     echo ""
     cat << '_EOF_'
 #######################################
