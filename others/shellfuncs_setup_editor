@@ -70,11 +70,13 @@ _setup_vscodium () {
         # second pipe will have input that looks like this:
         # sec rsa<key size>/<gpg key id> <date> [SC]
         # hence we want to grep on the '/'
+        # NOTE: if the system already has a secret gpg key on it, this will fail to attach the correct key 
+        #       to git (this assigns all the secret keys to the git configuration).
         GPG_KEY_ID="$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -ohE "\/[[:alnum:]]+" | grep -ohE "[[:alnum:]]+")"
         git config --global user.signingkey "$GPG_KEY_ID"
         COMMIT_SIGNING_KEY_VALUE='{"git.enableCommitSigning": true}'
         # does the codium setting's file already exist and is it not empty
-        if [ -f "$CODIUM_USER_SETTINGS_PATH" ] && ! [ -s "$CODIUM_USER_SETTINGS_PATH" ]; then
+        if [ -f "$CODIUM_USER_SETTINGS_PATH" ] && [ -s "$CODIUM_USER_SETTINGS_PATH" ]; then
             # is commit signing NOT enabled on codium (aka is the key/value for this NOT in the settings file)
             if [ "$(grep "git.enableCommitSigning" "$CODIUM_USER_SETTINGS_PATH" | grep -c true)" -eq 0 ]; then
                 TEMP_JSON_FILE_NAME="$(dirname "${CODIUM_USER_SETTINGS_PATH}")/temp.json"
@@ -82,7 +84,7 @@ _setup_vscodium () {
                 mv "$TEMP_JSON_FILE_NAME" "$CODIUM_USER_SETTINGS_PATH"
             fi
         else
-            echo "$COMMIT_SIGNING_KEY_VALUE" | jq > "$CODIUM_USER_SETTINGS_PATH"
+            echo "$COMMIT_SIGNING_KEY_VALUE" | jq . > "$CODIUM_USER_SETTINGS_PATH"
         fi
     fi
 }
