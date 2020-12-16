@@ -1,0 +1,87 @@
+#!/bin/bash
+# Small setup script for editor of choice from dotfiles repo.
+# Usage: Can be installed standalone, but setup_editor is called from 'install' script in same repo.
+
+#######################################
+# Installs editor of choice. This may include
+# a prompt in the future to select editor to install.
+# Globals:
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   - Editor function output to stdout
+#   - Additional success/error messages to stdout
+#######################################
+setup_editor () {
+    EDITOR="vscodium"
+    if ! _setup_vscodium; then
+        echo -e "$ERROR failed to install $EDITOR!"    
+    fi
+    echo -e "$SUCCESS $EDITOR was successfully installed!"
+    return
+}
+
+#######################################
+# Installs vscodium. Asks the user
+# whether or not to in addition to
+# generate gpg keys and get codium to use them.
+# That said, the public key will still need to be 
+# saved on web-hosted git service (e.g. GitHub).
+# 
+# Globals:
+#   ERROR
+#   SUCCESS
+# Outputs:
+#   - Success/error messages to stdout
+#   - 'dd' output to stdout
+#######################################
+_setup_vscodium () {
+    GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
+    CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
+    PACKAGE_NAME="codium"
+    SYSTEM_DEPENDENCIES=(
+        wget
+        gpg
+        jq
+    )
+    # based on instructions from:
+    # https://vscodium.com/
+    if [ -n "$(which apt)" ]; then
+        for package in "${SYSTEM_DEPENDENCIES[@]}"; do
+            if ! sudo apt install "$package" --assume-yes; then
+                echo -e "$ERROR Could not install $package system package"
+                return 1
+            fi
+        done
+        wget -qO - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
+        echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
+        sudo apt update && sudo apt install "$PACKAGE_NAME" --assume-yes
+        echo -e "$SUCCESS installed $PACKAGE_NAME successfully!"
+    else 
+        echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
+        return 1
+    fi
+    # generating gpg keys is based on this article:
+    # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
+    read -r -e -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
+    if [ "${GEN_KEY_REPLY,,}" == "y" ]; then
+        gpg --full-generate-key
+        # second pipe will have input that looks like this:
+        # sec rsa<key size>/<gpg key id> <date> [SC]
+        # hence we want to grep on the '/'
+        GPG_KEY_ID="$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -ohE "\/[[:alnum:]]+" | grep -ohE "[[:alnum:]]+")"
+        git config --global user.signingkey "$GPG_KEY_ID"
+        COMMIT_SIGNING_KEY_VALUE='{"git.enableCommitSigning": true}'
+        # does the codium setting's file already exist
+        if [ -f "$CODIUM_USER_SETTINGS_PATH" ]; then
+            # is commit signing NOT enabled on codium (aka is the key/value for this NOT in the settings file)
+            if [ "$(grep "git.enableCommitSigning" "$CODIUM_USER_SETTINGS_PATH" | grep -c true)" -eq 0 ]; then
+                TEMP_JSON_FILE_NAME="$(dirname "${CODIUM_USER_SETTINGS_PATH}")/temp.json"
+                jq < "$CODIUM_USER_SETTINGS_PATH" ". + $COMMIT_SIGNING_KEY_VALUE" > "$TEMP_JSON_FILE_NAME"
+                mv "$TEMP_JSON_FILE_NAME" "$CODIUM_USER_SETTINGS_PATH"
+            fi
+        fi
+        else
+            echo "$COMMIT_SIGNING_KEY_VALUE" | jq > "$CODIUM_USER_SETTINGS_PATH"
+    fi
+}
