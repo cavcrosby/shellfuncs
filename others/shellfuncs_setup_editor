@@ -48,14 +48,13 @@ _setup_vscodium () {
     # installation instructions from:
     # https://vscodium.com/
     if [ -n "$(which apt-get)" ]; then
-        sudo apt-get update
         if ! sudo apt-get install "${SYSTEM_DEPENDENCIES[@]}" --assume-yes; then
             echo -e "$ERROR could not install all required system packages"
             return 1
         fi
         wget -qO - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
         echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
-        if ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
+        if sudo apt-get update && ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
             echo -e "$ERROR could not install editor package '$PACKAGE_NAME'"
             return 1
         fi
