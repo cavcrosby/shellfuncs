@@ -18,7 +18,7 @@ if [ -z "$(which git)" ]; then
     exit 1
 fi
 
-if ! [[ "$GIT_REPOS_PATH" ]]; then
+if ! [ "$GIT_REPOS_PATH" ]; then
     read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
 
@@ -77,7 +77,7 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 #   ERROR: If shellfuncs repo could not be found
 #######################################
 load_shellfuncs () {
-    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+    if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
         SCRIPT_NAMES="$(ls -1 "$SCRIPTS_PATH")"
         # shellcheck source=/dev/null
         for script_name in $SCRIPT_NAMES; do
@@ -100,7 +100,7 @@ load_shellfuncs () {
 #   ERROR: If shellfuncs repo could not be found
 #######################################
 update_shellfuncs () {
-    if [[ -d "$SHELLFUNCS_REPO_PATH" ]]; then
+    if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
         cd "$SHELLFUNCS_REPO_PATH" || exit
         git pull --quiet
         echo -e "$SUCCESS Updated 'shellfuncs' repo"
