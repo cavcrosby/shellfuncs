@@ -3,15 +3,15 @@
 # Part of 'shellfuncs' git repo
 
 #######################################
-# Installs tortoisehg for the desktop. This script has 
-# been tested to work on the following distros:
-# Pop!_OS 20.04 LTS,
+# Installation prompt for other scripts. The purpose
+# of running any of these scripted software installs
+# would be to setup software in a preferred way on 
+# a new machine. A new machine is defined as a recently
+# installed distro with very few 'things' installed.
+# Things in this case could be numerous things such as
+# public/private keys, packages, etc.
 # Outputs:
-#   - Installation output from pip3/apt/make
-#   - Echo statements for general tracing
-#   - Error outputs from pip3/apt/make/cd/mkdir
-#       - In other words most commands in this script do
-#       not filter stdout/stderr output
+#   - Success/error messages to stdout
 #######################################
 shellfuncs_new_devmachine_setup (){
     cat << _EOF_
