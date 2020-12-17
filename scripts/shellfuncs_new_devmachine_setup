@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Part of 'shellfuncs' git repo
+
+#######################################
+# Installs tortoisehg for the desktop. This script has 
+# been tested to work on the following distros:
+# Pop!_OS 20.04 LTS,
+# Outputs:
+#   - Installation output from pip3/apt/make
+#   - Echo statements for general tracing
+#   - Error outputs from pip3/apt/make/cd/mkdir
+#       - In other words most commands in this script do
+#       not filter stdout/stderr output
+#######################################
+shellfuncs_new_devmachine_setup (){
+    cat << _EOF_
+
+Scripted software installs:
+
+1. IDE/Editor
+0. Quit (default)
+
+_EOF_
+    read -r -e -p "Enter selection to run [0-1]: " SELECTION_REPLY
+    case "$SELECTION_REPLY" in
+    1)  # shellcheck disable=SC1090
+        source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_editor"
+        setup_editor
+        ;;
+    *)  echo "exited"
+        return
+        ;;
+
+    esac
+}
