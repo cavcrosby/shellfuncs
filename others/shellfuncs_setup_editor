@@ -45,23 +45,25 @@ _setup_vscodium () {
         gpg
         jq
     )
-    # based on instructions from:
+    # installation instructions from:
     # https://vscodium.com/
-    if [ -n "$(which apt)" ]; then
-        for package in "${SYSTEM_DEPENDENCIES[@]}"; do
-            if ! sudo apt install "$package" --assume-yes; then
-                echo -e "$ERROR Could not install $package system package"
-                return 1
-            fi
-        done
+    if [ -n "$(which apt-get)" ]; then
+        sudo apt-get update
+        if ! sudo apt-get install "${SYSTEM_DEPENDENCIES[@]}" --assume-yes; then
+            echo -e "$ERROR could not install all required system packages"
+            return 1
+        fi
         wget -qO - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
         echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
-        sudo apt update && sudo apt install "$PACKAGE_NAME" --assume-yes
-        echo -e "$SUCCESS installed $PACKAGE_NAME successfully!"
+        if ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
+            echo -e "$ERROR could not install editor package '$PACKAGE_NAME'"
+            return 1
+        fi
     else 
         echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
         return 1
     fi
+    echo -e "$SUCCESS installed all required system packages and editor package '$PACKAGE_NAME'"
     # generating gpg keys is based on this article:
     # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
     read -r -e -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
@@ -71,7 +73,7 @@ _setup_vscodium () {
         # sec rsa<key size>/<gpg key id> <date> [SC]
         # hence we want to grep on the '/'
         # NOTE: if the system already has a secret gpg key on it, this will fail to attach the correct key 
-        #       to git (this assigns all the secret keys to the git configuration).
+        #       to git (one-liner assigns all the secret keys to the git configuration).
         GPG_KEY_ID="$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -ohE "\/[[:alnum:]]+" | grep -ohE "[[:alnum:]]+")"
         git config --global user.signingkey "$GPG_KEY_ID"
         COMMIT_SIGNING_KEY_VALUE='{"git.enableCommitSigning": true}'
