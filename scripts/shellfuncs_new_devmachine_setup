@@ -10,6 +10,8 @@
 # installed distro with very few 'things' installed.
 # Things in this case could be numerous things such as
 # public/private keys, packages, etc.
+# Globals:
+#   OTHER_SCRIPTS_PATH
 # Outputs:
 #   - Success/error messages to stdout
 #######################################
