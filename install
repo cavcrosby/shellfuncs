@@ -6,7 +6,7 @@
 set -e
 PWD="$(pwd)"
 PROGRAM_NAME="install"
-DOTFILE_NAME=".profile"
+DEFAULT_SHELL_DOTFILE_NAME=".bashrc"
 LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
 OTHER_SCRIPTS_DIR_NAME="others"
@@ -22,6 +22,10 @@ if ! [[ "$GIT_REPOS_PATH" ]]; then
     read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
 
+if [ -z "$SHELL_DOTFILE_TO_WRITE_TO" ]; then
+    SHELL_DOTFILE_TO_WRITE_TO=$DEFAULT_SHELL_DOTFILE_NAME
+fi
+
 LOCAL_REPO_PATH="${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}"
 SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
 OTHER_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${OTHER_SCRIPTS_DIR_NAME}"
@@ -32,7 +36,7 @@ read -r -e -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
 # using parameter expansion, ',,' append will convert the string to lowercase
 if [ "${RE_INSTALL_REPLY,,}" == "y" ]; then
     if [ -d "$LOCAL_REPO_PATH" ]; then
-        echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${DOTFILE_NAME}' may still contain 'install' functions"
+        echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${SHELL_DOTFILE_TO_WRITE_TO}' may still contain 'install' functions"
         read -r -e -p "Proceed with reinstall, y/n? (n) " PROCEED_REINSTALLED_REPLY <&1
         if [ "${PROCEED_REINSTALLED_REPLY,,}" == "y" ]; then
             rm -rf "$LOCAL_REPO_PATH"
@@ -116,6 +120,6 @@ update_shellfuncs
 load_shellfuncs
 _EOF_
 
-} >> "${HOME}/${DOTFILE_NAME}"
+} >> "${HOME}/${SHELL_DOTFILE_TO_WRITE_TO}"
 
 echo -e "$SUCCESS 'install' was successfull! Restart your shell session to pull in/update scripts"
