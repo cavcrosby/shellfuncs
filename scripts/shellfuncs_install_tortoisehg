@@ -20,6 +20,7 @@ PROGRAM_NAME="shellfuncs_install_tortoisehg"
 #######################################
 shellfuncs_install_tortoisehg () {
     DESTINATION_DIR_PATH="$HOME"/tortoisehg
+    PYTHON_EXECUTABLE="$(which python3)"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
     SYSTEM_DEPENDENCIES=(
@@ -40,18 +41,12 @@ shellfuncs_install_tortoisehg () {
     ! cd "$DESTINATION_DIR_PATH" && _shellfuncs_install_tortoisehg_cleanup && return 1
     echo "${PROGRAM_NAME}: Inside destination directory"
 
-    # have a python symlink point to a python 3 interpreter (at least thats the hope!)
-    if ! ln -sf "$(which python3)" "/usr/bin/python"; then
-        echo -e "$ERROR Could not establish symlink for python to python3"
+    # probably need to check to make sure a python 3 interpreter was loaded into PYTHON_EXECUTABLE
+    if [ "$($PYTHON_EXECUTABLE --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
+        echo -e "$ERROR 'python3' does not point to a python 3 interpreter"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    # probably need to check to make sure that what it points to is actually a 
-    # python 3 interpreter
-    if [ "$(python --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
-        echo -e "$ERROR 'python' symlink does not point to a python 3 interpreter"
-        _shellfuncs_install_tortoisehg_cleanup && return 1
-    fi
-    echo "${PROGRAM_NAME}: 'python' symlink points to a python 3 interpreter!"
+    echo "${PROGRAM_NAME}: 'python3' symlink points to a python 3 interpreter!"
     sleep 2
 
     # now to install system dependencies
