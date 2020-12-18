@@ -6,15 +6,11 @@
 PROGRAM_NAME="shellfuncs_install_tortoisehg"
 
 #######################################
-# Installs tortoisehg for the desktop. This script has 
-# been tested to work on the following distros:
-# Pop!_OS 20.04 LTS,
-# Globals:
-#   OTHER_SCRIPTS_PATH
+# Installs tortoisehg for the desktop.
 # Outputs:
-#   - Installation output from pip3/apt/make
+#   - Installation output from pip/apt-et/make
 #   - Echo statements for general tracing
-#   - Error outputs from pip3/apt/make/cd/mkdir
+#   - Error outputs from pip/apt-et/make/cd/mkdir
 #       - In other words most commands in this script do
 #       not filter stdout/stderr output
 #######################################
