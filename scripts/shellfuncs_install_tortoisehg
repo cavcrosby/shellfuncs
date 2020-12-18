@@ -40,7 +40,7 @@ shellfuncs_install_tortoisehg () {
     # make a folder to hold the tortoise source
     mkdir "$DESTINATION_DIR_PATH" || return 1
     ! cd "$DESTINATION_DIR_PATH" && _shellfuncs_install_tortoisehg_cleanup && return 1
-    echo "${PROGRAM_NAME}: Inside destination directory"
+    echo "${PROGRAM_NAME}: inside destination directory"
 
     # probably need to check to make sure a python 3 interpreter was loaded into PYTHON_EXECUTABLE
     if [ -z "$PYTHON_EXECUTABLE" ] || [ "$($PYTHON_EXECUTABLE --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
@@ -51,33 +51,29 @@ shellfuncs_install_tortoisehg () {
     sleep 2
 
     # now to install system dependencies
-    for package in "${SYSTEM_DEPENDENCIES[@]}"; do
-        if ! sudo apt install "$package" -y; then
-            echo -e "$ERROR Could not install $package system package"
-            _shellfuncs_install_tortoisehg_cleanup && return 1
-        fi
-    done
-    echo "${PROGRAM_NAME}: Installed system dependencies"
+    if ! sudo apt-get install "${SYSTEM_DEPENDENCIES[@]}" --assume-yes; then
+        echo -e "$ERROR could not install all system packages"
+        _shellfuncs_install_tortoisehg_cleanup && return 1
+    fi
+    echo "${PROGRAM_NAME}: installed system dependencies"
 
     # make sure that python utilities are up to date
     # NOTE: I usually put double quotes around all my shell variables in scripts 
-    # but we would have ejected long before if PYTHON_EXECUTABLE was empty... so yea
+    # but we would have been ejected long before if PYTHON_EXECUTABLE was empty... so yea
     $PYTHON_EXECUTABLE -m pip install --upgrade pip setuptools wheel
     # now to install all python packages/dependencies
-    for package in "${PYTHON_DEPENDENCIES[@]}"; do
-        if ! pip3 install "$package"; then
-            echo -e "$ERROR Could not install $package python package"
-            _shellfuncs_install_tortoisehg_cleanup && return 1
-        fi
-    done
+    if ! $PYTHON_EXECUTABLE -m pip install "${PYTHON_DEPENDENCIES[@]}"; then
+        echo -e "$ERROR could not install all python packages"
+        _shellfuncs_install_tortoisehg_cleanup && return 1
+    fi
     echo "${PROGRAM_NAME}: Installed python dependencies"
     
     # lets build tortoisehg now, and install a desktop entry!
     if ! hg clone "$TORTOISEHG_REPO_URL" -r "$BRANCH" "$PWD"; then
-        echo -e "$ERROR Could not download tortoisehg source"
+        echo -e "$ERROR could not download tortoisehg source"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: Got the goods (aka source code)!"
+    echo "${PROGRAM_NAME}: got the goods (aka source code)!"
     sleep 2
 
     # to prevent tortoisehg from tripping on itself, I decided that I would slot
@@ -85,7 +81,7 @@ shellfuncs_install_tortoisehg () {
     ! mkdir $TEMP_DIR_NAME && _shellfuncs_install_tortoisehg_cleanup && return 1
     ! cd "$TEMP_DIR_NAME" && _shellfuncs_install_tortoisehg_cleanup && return 1
     if ! sudo ln -sf "$(which python3)" "./python"; then
-        echo -e "$ERROR Could not establish symlink for python to python3"
+        echo -e "$ERROR could not establish symlink for python to python3"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
     # out of TEMP_DIR_NAME
@@ -93,10 +89,10 @@ shellfuncs_install_tortoisehg () {
     export PATH="${PWD}/${TEMP_DIR_NAME}:${PATH}"
 
     if ! make local; then
-        echo -e "$ERROR Build failed"
+        echo -e "$ERROR build failed"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: Finally, build from source was successful"
+    echo "${PROGRAM_NAME}: finally, build from source was successful"
     rm -rf "$TEMP_DIR_NAME"
     cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
 [Desktop Entry]
@@ -108,15 +104,15 @@ Type=Application
 Icon=$DESTINATION_DIR_PATH/icons/thg_logo.ico
 _EOF_
     if [ $? -ne 0 ] ; then
-        echo -e "$ERROR Could not install desktop entry"
+        echo -e "$ERROR could not install desktop entry"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo -e "$SUCCESS Installed tortoisehg, restart the shell session to restore original PATH"
-    cd - > /dev/null || return
+    echo -e "$SUCCESS installed tortoisehg, restart the shell session to restore original PATH"
+    cd .. || return
 }
 
 _shellfuncs_install_tortoisehg_cleanup (){
-    echo "${PROGRAM_NAME}: Cleaning up, installed package(s) will not be uninstalled!"
+    echo "${PROGRAM_NAME}: cleaning up, installed package(s) will not be uninstalled!"
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
     [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..
     [ -d "$DESTINATION_DIR_BASENAME" ] && rm -rf "$DESTINATION_DIR_PATH"
