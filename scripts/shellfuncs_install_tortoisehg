@@ -49,7 +49,7 @@ shellfuncs_install_tortoisehg () {
         echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    if [[ "$(python --version | grep -e "Python 3\..*" -c)" -eq 0 ]]; then
+    if [ "$(python --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
         echo -e "$ERROR 'python' symlink does not point to a python 3 interpreter"
         echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
@@ -101,7 +101,7 @@ Terminal=false
 Type=Application
 Icon=$DESTINATION_DIR_PATH/icons/thg_logo.ico
 _EOF_
-    if [[ $? -ne 0 ]] ; then
+    if [ $? -ne 0 ] ; then
         echo -e "$ERROR Could not install desktop entry"
         echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
@@ -112,6 +112,6 @@ _EOF_
 
 _shellfuncs_install_tortoisehg_cleanup (){
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
-    [[ -d "$DESTINATION_DIR_BASENAME" ]] || cd ..
-    [[ -d "$DESTINATION_DIR_BASENAME" ]] && rm -rf "$DESTINATION_DIR_PATH"
+    [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..
+    [ -d "$DESTINATION_DIR_BASENAME" ] && rm -rf "$DESTINATION_DIR_PATH"
 }
