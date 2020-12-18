@@ -21,6 +21,7 @@ PROGRAM_NAME="shellfuncs_install_tortoisehg"
 shellfuncs_install_tortoisehg () {
     DESTINATION_DIR_PATH="$HOME"/tortoisehg
     PYTHON_EXECUTABLE="$(which python3)"
+    TEMP_DIR_NAME="temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
     SYSTEM_DEPENDENCIES=(
@@ -74,6 +75,16 @@ shellfuncs_install_tortoisehg () {
     fi
     echo "${PROGRAM_NAME}: Got the goods (aka source code)!"
     sleep 2
+
+    mdkir $TEMP_DIR_NAME || _shellfuncs_install_tortoisehg_cleanup && return 1
+    ! cd "$TEMP_DIR_NAME" && _shellfuncs_install_tortoisehg_cleanup && return 1
+    if ! sudo ln -sf "$(which python3)" "./python"; then
+        echo -e "$ERROR Could not establish symlink for python to python3"
+        _shellfuncs_install_tortoisehg_cleanup && return 1
+    fi
+    cd .. 
+    export PATH="$PWD/$TEMP_DIR_NAME:${PATH}"
+
     if ! make local; then
         echo -e "$ERROR Build failed"
         _shellfuncs_install_tortoisehg_cleanup && return 1
