@@ -55,7 +55,8 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
         echo "# ANSI escape code sequences for status messages with character coloring"
     fi
     if [ -z "$SUCCESS" ]; then
-        echo 'export SUCCESS="\033[1;32m[SUCCESS]:\033[0m"'
+        SUCCESS="\033[1;32m[SUCCESS]:\033[0m"
+        echo "export SUCCESS=\"${SUCCESS}\""
     fi
     if [ -z "$WARNING" ]; then
         echo 'export WARNING="\033[1;33m[WARNING]:\033[0m"'
