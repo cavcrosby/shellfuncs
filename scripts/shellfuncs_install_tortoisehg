@@ -3,6 +3,8 @@
 # Part of 'shellfuncs' git repo
 # Inspired by: https://askubuntu.com/questions/1182598/how-to-install-tortoisehg-on-ubuntu-19-10#answer-1246183
 
+PROGRAM_NAME="shellfuncs_install_tortoisehg"
+
 #######################################
 # Installs tortoisehg for the desktop. This script has 
 # been tested to work on the following distros:
@@ -17,13 +19,10 @@
 #       not filter stdout/stderr output
 #######################################
 shellfuncs_install_tortoisehg () {
-    PROGRAM_NAME="shellfuncs_install_tortoisehg"
     DESTINATION_DIR_PATH="$HOME"/tortoisehg
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
-    PYTHON_IS_PYTHON3=0
     SYSTEM_DEPENDENCIES=(
-        python-is-python3
         python3-pip 
         build-essential 
         mercurial 
@@ -39,59 +38,52 @@ shellfuncs_install_tortoisehg () {
     # make a folder to hold the tortoise source
     mkdir "$DESTINATION_DIR_PATH" || return 1
     ! cd "$DESTINATION_DIR_PATH" && _shellfuncs_install_tortoisehg_cleanup && return 1
-    echo "$PROGRAM_NAME Inside destination directory"
+    echo "${PROGRAM_NAME}: Inside destination directory"
 
-    # installs system dependencies
-    # first, need to make sure file 'python' exists as a symlink that
-    # points to a python 3 interpreter
-    if ! sudo apt install -y "${SYSTEM_DEPENDENCIES["$PYTHON_IS_PYTHON3"]}"; then
-        echo -e "$ERROR Could not install ${SYSTEM_DEPENDENCIES["$PYTHON_IS_PYTHON3"]} package"
-        echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
+    # have a python symlink point to a python 3 interpreter (at least thats the hope!)
+    if ! ln -sf "$(which python3)" "/usr/bin/python"; then
+        echo -e "$ERROR Could not establish symlink for python to python3"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
+    # probably need to check to make sure that what it points to is actually a 
+    # python 3 interpreter
     if [ "$(python --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
         echo -e "$ERROR 'python' symlink does not point to a python 3 interpreter"
-        echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "$PROGRAM_NAME 'python' symlink points to a python 3 interpreter!"
+    echo "${PROGRAM_NAME}: 'python' symlink points to a python 3 interpreter!"
     sleep 2
-    unset "${SYSTEM_DEPENDENCIES["$PYTHON_IS_PYTHON3"]}"
 
-    # now to install all other system dependencies
+    # now to install system dependencies
     for package in "${SYSTEM_DEPENDENCIES[@]}"; do
         if ! sudo apt install "$package" -y; then
             echo -e "$ERROR Could not install $package system package"
-            echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
             _shellfuncs_install_tortoisehg_cleanup && return 1
         fi
     done
-    echo "$PROGRAM_NAME Installed system dependencies"
+    echo "${PROGRAM_NAME}: Installed system dependencies"
 
     # now to install all python packages/dependencies
     for package in "${PYTHON_DEPENDENCIES[@]}"; do
         if ! pip3 install "$package"; then
             echo -e "$ERROR Could not install $package python package"
-            echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
             _shellfuncs_install_tortoisehg_cleanup && return 1
         fi
     done
-    echo "$PROGRAM_NAME Installed python dependencies"
+    echo "${PROGRAM_NAME}: Installed python dependencies"
     
     # lets build tortoisehg now, and install a desktop entry!
     if ! hg clone "$TORTOISEHG_REPO_URL" -r "$BRANCH" "$PWD"; then
         echo -e "$ERROR Could not download tortoisehg source"
-        echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "$PROGRAM_NAME Got the goods (aka source code)!"
+    echo "${PROGRAM_NAME}: Got the goods (aka source code)!"
     sleep 2
     if ! make local; then
         echo -e "$ERROR Build failed"
-        echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "$PROGRAM_NAME Finally, build from source was successful"
+    echo "${PROGRAM_NAME}: Finally, build from source was successful"
     cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
 [Desktop Entry]
 Name=TortoiseHG
@@ -103,7 +95,6 @@ Icon=$DESTINATION_DIR_PATH/icons/thg_logo.ico
 _EOF_
     if [ $? -ne 0 ] ; then
         echo -e "$ERROR Could not install desktop entry"
-        echo "$PROGRAM_NAME Cleaning up, package(s) will not be uninstalled!"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
     echo -e "$SUCCESS Installed tortoisehg, if need be, restart gnome-shell"
@@ -111,6 +102,7 @@ _EOF_
 }
 
 _shellfuncs_install_tortoisehg_cleanup (){
+    echo "${PROGRAM_NAME}: Cleaning up, installed package(s) will not be uninstalled!"
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
     [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..
     [ -d "$DESTINATION_DIR_BASENAME" ] && rm -rf "$DESTINATION_DIR_PATH"
