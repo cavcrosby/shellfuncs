@@ -43,7 +43,7 @@ shellfuncs_install_tortoisehg () {
     echo "${PROGRAM_NAME}: Inside destination directory"
 
     # probably need to check to make sure a python 3 interpreter was loaded into PYTHON_EXECUTABLE
-    if [ "$($PYTHON_EXECUTABLE --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
+    if [ -z "$PYTHON_EXECUTABLE" ] || [ "$($PYTHON_EXECUTABLE --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
         echo -e "$ERROR 'python3' does not point to a python 3 interpreter"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
@@ -59,6 +59,10 @@ shellfuncs_install_tortoisehg () {
     done
     echo "${PROGRAM_NAME}: Installed system dependencies"
 
+    # make sure that python utilities are up to date
+    # NOTE: I usually put double quotes around all my shell variables in scripts 
+    # but we would have ejected long before if PYTHON_EXECUTABLE was empty... so yea
+    $PYTHON_EXECUTABLE -m pip install --upgrade pip setuptools wheel
     # now to install all python packages/dependencies
     for package in "${PYTHON_DEPENDENCIES[@]}"; do
         if ! pip3 install "$package"; then
@@ -76,7 +80,7 @@ shellfuncs_install_tortoisehg () {
     echo "${PROGRAM_NAME}: Got the goods (aka source code)!"
     sleep 2
 
-    mdkir $TEMP_DIR_NAME || _shellfuncs_install_tortoisehg_cleanup && return 1
+    mkdir $TEMP_DIR_NAME || _shellfuncs_install_tortoisehg_cleanup && return 1
     ! cd "$TEMP_DIR_NAME" && _shellfuncs_install_tortoisehg_cleanup && return 1
     if ! sudo ln -sf "$(which python3)" "./python"; then
         echo -e "$ERROR Could not establish symlink for python to python3"
