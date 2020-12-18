@@ -101,7 +101,7 @@ shellfuncs_install_tortoisehg () {
     cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
 [Desktop Entry]
 Name=TortoiseHG
-Exec=$DESTINATION_DIR_PATH/thg
+Exec=$PYTHON_EXECUTABLE $DESTINATION_DIR_PATH/thg
 Comment=Launch TortoiseHG
 Terminal=false
 Type=Application
@@ -111,7 +111,7 @@ _EOF_
         echo -e "$ERROR Could not install desktop entry"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo -e "$SUCCESS Installed tortoisehg, if need be, restart the shell"
+    echo -e "$SUCCESS Installed tortoisehg, restart the shell session to restore original PATH"
     cd - > /dev/null || return
 }
 
