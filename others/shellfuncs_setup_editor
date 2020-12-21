@@ -12,9 +12,9 @@
 #   - Editor function output to stdout
 #   - Additional success/error messages to stdout
 #######################################
-setup_editor () {
+shellfuncs_setup_editor () {
     EDITOR="vscodium"
-    if ! _setup_vscodium; then
+    if ! _shellfuncs_setup_vscodium; then
         echo -e "$ERROR failed to install $EDITOR!"
         return 1
     fi
@@ -36,7 +36,7 @@ setup_editor () {
 #   - Success/error messages to stdout
 #   - 'dd' output to stdout
 #######################################
-_setup_vscodium () {
+_shellfuncs_setup_vscodium () {
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
     PACKAGE_NAME="codium"

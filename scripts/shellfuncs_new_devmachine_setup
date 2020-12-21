@@ -28,7 +28,7 @@ _EOF_
     case "$SELECTION_REPLY" in
     1)  # shellcheck disable=SC1090
         source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_editor"
-        setup_editor
+        shellfuncs_setup_editor
         ;;
     *)  echo "exited"
         return
