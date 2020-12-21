@@ -51,7 +51,6 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 {
     echo ""
     echo "# Part of 'shellfuncs' git repo"
-    echo "# TO BE INSERTED INTO BASHRC"
     echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
     echo "SCRIPTS_PATH=$SCRIPTS_PATH"
     echo "OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
