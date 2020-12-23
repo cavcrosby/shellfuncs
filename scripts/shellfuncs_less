@@ -17,3 +17,18 @@ shellfuncs_less () {
     less "${SCRIPTS_PATH}/${1}"
     return
 }
+
+#######################################
+# Bash tab completion for shellfuncs_less,
+# displays all scripts in SCRIPTS_PATH.
+# Globals:
+#   SCRIPTS_PATH
+# Outputs:
+#   shellfunc scripts that can be viewed
+#######################################
+_shellfuncs_less_completion () {
+    complete -W "$(ls "${SCRIPTS_PATH}")" shellfuncs_less
+    return
+}
+
+_shellfuncs_less_completion
