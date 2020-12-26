@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# Part of 'shellfuncs' git repo
+
+#######################################
+# Installs a codium extension through Visual 
+# Studio Code's Marketplace. Marketplace link below:
+# https://marketplace.visualstudio.com/vscode
+# Globals:
+#   ERROR
+#   SUCCESS
+# Arguments:
+#   $1: codium extension (<publisher>.<extension_name>)
+#   $2: codium extension version 
+# Outputs:
+#   - Success/error messages to stdout
+#######################################
+shellfuncs_install_codium_extension () {
+    EXTENSION="$1"
+    EXTENSION_VERSION="$2"
+    if [ -z "$EXTENSION" ]; then
+        echo -e "$ERROR extension is required as \$1"
+        return 1
+    elif [ -z "$EXTENSION_VERSION" ]; then
+        echo -e "$ERROR extension <version> is required as \$2"
+        return 1
+    fi
+    # mhutchie.git-graph is an example of a codium extension
+    # usually formatted as <publisher>.<extension_name>, but I just referred to the entire/literal expression as extension
+    IFS='.' read -r EXTENSION_PUBLISHER EXTENSION_NAME <<< "$EXTENSION"
+    OUTPUT_FILE_NAME_GZ="$EXTENSION_PUBLISHER.$EXTENSION_NAME-$EXTENSION_VERSION.gz"
+    OUTPUT_FILE_NAME="$EXTENSION_PUBLISHER.$EXTENSION_NAME-$EXTENSION_VERSION.vsix"
+    EXT_URL="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/$EXTENSION_PUBLISHER/vsextensions/$EXTENSION_NAME/$EXTENSION_VERSION/vspackage"
+    if ! wget -qO "$OUTPUT_FILE_NAME_GZ" "$EXT_URL"; then
+        echo -e "$ERROR failed to <download> $EXTENSION!"
+        return 1
+    fi
+    # wget downloads files compressed as gzip
+    # https://stackoverflow.com/questions/60090123/extensions-for-vs-code-not-working-when-downloaded-with-wget-or-curl
+    gunzip -cf "$OUTPUT_FILE_NAME_GZ" > "$OUTPUT_FILE_NAME"
+    # NOTE: installing a new extension will overwrite any previous version installed
+    # NOTE2: weirdly installing an extension successfully may still signal an issue...
+    # might have todo with exceptions thrown from installation (even though the installation works)
+    codium --install-extension "$OUTPUT_FILE_NAME"
+    rm "$OUTPUT_FILE_NAME_GZ"
+    rm "$OUTPUT_FILE_NAME"
+    echo -e "$SUCCESS installed $EXTENSION $EXTENSION_VERSION successfully"
+    return
+}

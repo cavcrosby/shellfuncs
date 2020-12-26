@@ -7,7 +7,6 @@
 # updated version through Visual Studio Code's
 # Marketplace. Marketplace link below:
 # https://marketplace.visualstudio.com/vscode
-#
 # Outputs:
 #   Extension name with the newer/local version number,
 #   it is assumed the marketplace version will never
@@ -16,6 +15,7 @@
 shellfuncs_show_codium_exts_updates () {
     for extension in $(codium --list-extensions --show-versions); do
         # codium returns an extension as extension@local_version (e.g. gerane.Theme-Boron@0.0.7)
+        # the definition of 'codium extension' may differ in other scripts, the definition of this is above for this script
         IFS='@' read -r extension_name local_version <<< "$extension"
         marketplace_version="$(wget -qO - https://marketplace.visualstudio.com/items?itemName="$extension_name" | grep -ohE "\"VersionValue\":\"[0-9\.]+\"" | grep -oh "[0-9].*[0-9]")"
         if [ -n "$marketplace_version" ]; then
