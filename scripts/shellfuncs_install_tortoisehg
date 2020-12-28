@@ -3,19 +3,23 @@
 # Part of 'shellfuncs' git repo
 # Inspired by: https://askubuntu.com/questions/1182598/how-to-install-tortoisehg-on-ubuntu-19-10#answer-1246183
 
-PROGRAM_NAME="shellfuncs_install_tortoisehg"
+# This is determined in the main shellfunc function
+PROGRAM_NAME=""
 
 #######################################
 # Installs tortoisehg for the desktop.
 # Outputs:
-#   - Installation output from pip/apt-et/make
+#   - Installation output from pip/apt-get/make
 #   - Echo statements for general tracing
-#   - Error outputs from pip/apt-et/make/cd/mkdir
+#   - Error outputs from pip/apt-get/make/cd/mkdir
 #       - In other words most commands in this script do
 #       not filter stdout/stderr output
 #######################################
 shellfuncs_install_tortoisehg () {
-    DESTINATION_DIR_PATH="$HOME"/tortoisehg
+    # NOTE: getting the PROGRAM_NAME currently is bash specfic
+    # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
+    PROGRAM_NAME="${FUNCNAME[0]}"
+    DESTINATION_DIR_PATH="${HOME}/tortoisehg"
     PYTHON_EXECUTABLE="$(which python3)"
     TEMP_DIR_NAME="temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
