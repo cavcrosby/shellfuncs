@@ -21,7 +21,7 @@ shellfuncs_install_tortoisehg () {
     PROGRAM_NAME="${FUNCNAME[0]}"
     DESTINATION_DIR_PATH="${HOME}/tortoisehg"
     PYTHON_EXECUTABLE="$(which python3)"
-    TEMP_DIR_NAME="temp"
+    TEMP_DIR_NAME="${PROGRAM_NAME}-temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
     SYSTEM_DEPENDENCIES=(
@@ -93,7 +93,7 @@ shellfuncs_install_tortoisehg () {
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
     echo "${PROGRAM_NAME}: finally, build from source was successful"
-    rm -rf "$TEMP_DIR_NAME"
+    rm --recursive --force "$TEMP_DIR_NAME"
     cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
 [Desktop Entry]
 Name=TortoiseHG
@@ -115,5 +115,5 @@ _shellfuncs_install_tortoisehg_cleanup (){
     echo "${PROGRAM_NAME}: cleaning up, installed package(s) will not be uninstalled!"
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
     [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..
-    [ -d "$DESTINATION_DIR_BASENAME" ] && rm -rf "$DESTINATION_DIR_PATH"
+    [ -d "$DESTINATION_DIR_BASENAME" ] && rm --recursive --force "$DESTINATION_DIR_PATH"
 }
