@@ -21,7 +21,7 @@ shellfuncs_install_tortoisehg () {
     PROGRAM_NAME="${FUNCNAME[0]}"
     DESTINATION_DIR_PATH="${HOME}/tortoisehg"
     PYTHON_EXECUTABLE="$(which python3)"
-    TEMP_DIR_NAME="${PROGRAM_NAME}-temp"
+    TEMP_DIR_NAME="${PROGRAM_NAME}_temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
     SYSTEM_DEPENDENCIES=(
