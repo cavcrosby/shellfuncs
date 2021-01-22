@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# Small setup script for editor of choice from dotfiles repo.
-# Usage: Can be installed standalone, but setup_editor is called from 'install' script in same repo.
+# Small setup script for editor of choice.
+# Usage: Can be installed standalone, but shellfuncs_setup_editor is called 
+# from 'shellfuncs_new_machine_setup' script in same repo.
 
 #######################################
 # Installs editor of choice. This may include
@@ -29,7 +30,6 @@ shellfuncs_setup_editor () {
 # generate gpg keys and get codium to use them.
 # That said, the public key will still need to be 
 # saved on web-hosted git service (e.g. GitHub).
-# 
 # Globals:
 #   ERROR
 #   SUCCESS
@@ -38,6 +38,7 @@ shellfuncs_setup_editor () {
 #   - 'dd' output to stdout
 #######################################
 _shellfuncs_setup_vscodium () {
+    # TODO tidy somethings up
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
     CODIUM_USER_SETTINGS_DIR="$(dirname "$CODIUM_USER_SETTINGS_PATH")"
@@ -64,7 +65,7 @@ _shellfuncs_setup_vscodium () {
         echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
         return 1
     fi
-    echo -e "$SUCCESS installed all required system packages and editor package '$PACKAGE_NAME'"
+    echo -e "$SUCCESS installed all required system packages and package '$PACKAGE_NAME'"
     # generating gpg keys is based on this article:
     # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
     read -r -e -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
