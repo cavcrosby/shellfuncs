@@ -31,7 +31,7 @@ _EOF_
         shellfuncs_setup_editor
         ;;
     *)  echo "exited"
-        return
+        return 0
         ;;
 
     esac

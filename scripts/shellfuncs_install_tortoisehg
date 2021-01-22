@@ -69,7 +69,7 @@ shellfuncs_install_tortoisehg () {
     echo "${PROGRAM_NAME}: Installed python dependencies"
     
     # lets build tortoisehg now, and install a desktop entry!
-    if ! hg clone "$TORTOISEHG_REPO_URL" -r "$BRANCH" "$PWD"; then
+    if ! hg clone "$TORTOISEHG_REPO_URL" --rev "$BRANCH" "$PWD"; then
         echo -e "$ERROR could not download tortoisehg source"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
@@ -80,7 +80,7 @@ shellfuncs_install_tortoisehg () {
     # in a python 3 symlink into a temp directory and shove that onto the PATH first
     ! mkdir $TEMP_DIR_NAME && _shellfuncs_install_tortoisehg_cleanup && return 1
     ! cd "$TEMP_DIR_NAME" && _shellfuncs_install_tortoisehg_cleanup && return 1
-    if ! sudo ln -sf "$(which python3)" "./python"; then
+    if ! sudo ln --symbolic --force "$(which python3)" "./python"; then
         echo -e "$ERROR could not establish symlink for python to python3"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
@@ -108,7 +108,7 @@ _EOF_
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
     echo -e "$SUCCESS installed tortoisehg, restart the shell session to restore original PATH"
-    cd .. || return
+    cd .. || return 0
 }
 
 _shellfuncs_install_tortoisehg_cleanup (){

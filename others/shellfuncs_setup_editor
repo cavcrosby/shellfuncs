@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Small setup script for editor of choice from dotfiles repo.
 # Usage: Can be installed standalone, but setup_editor is called from 'install' script in same repo.
 
@@ -39,6 +40,7 @@ shellfuncs_setup_editor () {
 _shellfuncs_setup_vscodium () {
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
+    CODIUM_USER_SETTINGS_DIR="$(dirname "$CODIUM_USER_SETTINGS_PATH")"
     PACKAGE_NAME="codium"
     SYSTEM_DEPENDENCIES=(
         wget
@@ -52,7 +54,7 @@ _shellfuncs_setup_vscodium () {
             echo -e "$ERROR could not install all required system packages"
             return 1
         fi
-        wget -qO - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
+        wget --quiet --output-document - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
         echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
         if sudo apt-get update && ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
             echo -e "$ERROR could not install editor package '$PACKAGE_NAME'"
@@ -73,13 +75,15 @@ _shellfuncs_setup_vscodium () {
         # hence we want to grep on the '/'
         # NOTE: if the system already has a secret gpg key on it, this will fail to attach the correct key 
         #       to git (one-liner assigns all the secret keys to the git configuration).
+        # NOTE2: Omitting the expansion of some short flags used below, to perserve readability
         GPG_KEY_ID="$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -ohE "\/[[:alnum:]]+" | grep -ohE "[[:alnum:]]+")"
         git config --global user.signingkey "$GPG_KEY_ID"
         COMMIT_SIGNING_KEY_VALUE='{"git.enableCommitSigning": true}'
+        if ! [ -d "$CODIUM_USER_SETTINGS_DIR)" ]; then mkdir --parents "$CODIUM_USER_SETTINGS_DIR"; fi
         # does the codium setting's file already exist and is it not empty
         if [ -f "$CODIUM_USER_SETTINGS_PATH" ] && [ -s "$CODIUM_USER_SETTINGS_PATH" ]; then
             # is commit signing NOT enabled on codium (aka is the key/value for this NOT in the settings file)
-            if [ "$(grep "git.enableCommitSigning" "$CODIUM_USER_SETTINGS_PATH" | grep -c true)" -eq 0 ]; then
+            if [ "$(grep "git.enableCommitSigning" "$CODIUM_USER_SETTINGS_PATH" | grep --count true)" -eq 0 ]; then
                 TEMP_JSON_FILE_NAME="$(dirname "${CODIUM_USER_SETTINGS_PATH}")/temp.json"
                 jq < "$CODIUM_USER_SETTINGS_PATH" ". + $COMMIT_SIGNING_KEY_VALUE" > "$TEMP_JSON_FILE_NAME"
                 mv "$TEMP_JSON_FILE_NAME" "$CODIUM_USER_SETTINGS_PATH"
@@ -88,4 +92,5 @@ _shellfuncs_setup_vscodium () {
             echo "$COMMIT_SIGNING_KEY_VALUE" | jq . > "$CODIUM_USER_SETTINGS_PATH"
         fi
     fi
+    return 0
 }
