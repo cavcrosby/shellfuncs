@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# Small setup script for hypervisor of choice from dotfiles repo.
+# Usage: Can be installed standalone, but shellfuncs_setup_hypervisor is called 
+# from 'shellfuncs_new_machine_setup' script in same repo.
+
+#######################################
+# Installs hypervisor of choice. This may include
+# a prompt in the future to select hypervisor to install.
+# Globals:
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   - Hypervisor function output to stdout
+#   - Additional success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+shellfuncs_setup_hypervisor () {
+    HYPERVISOR="virtualbox"
+    _shellfuncs_setup_virtualbox || EXIT_STATUS=$?
+    if [ "$EXIT_STATUS" -eq 2 ]; then
+        return 0
+    elif [ "$EXIT_STATUS" -ne 0 ]; then
+        echo -e "$ERROR failed to install $HYPERVISOR!"
+        return 1
+    else
+        echo -e "$SUCCESS $HYPERVISOR was successfully installed!"
+        return 0
+    fi    
+}
+
+#######################################
+# Installs Oracle's VirtualBox. Asks the user
+# whether or not to install the extension pack
+# for virtualbox.
+# Globals:
+#   ERROR
+#   SUCCESS
+# Outputs:
+#   - Success/error messages to stdout
+#   - 'dd' output to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#   $? -ne 0 || $? -ne 2; then error
+#   2 - prompted exit from interactive menu
+#######################################
+_shellfuncs_setup_virtualbox () {
+    VIRTUALBOX_DEB_REPO_URL="https://download.virtualbox.org/virtualbox/debian"
+    # NOTE: from the virtualbox website:
+    # Please install the same version extension pack as your installed version of VirtualBox.
+    # Just ensure major.minor versions match, not so worried about patch
+    EXT_PACK_URL="https://download.virtualbox.org/virtualbox/6.1.18/Oracle_VM_VirtualBox_Extension_Pack-6.1.18.vbox-extpack"
+    EXT_PACK_NAME="$(basename "$EXT_PACK_URL")"
+    PACKAGE_NAME="virtualbox-6.1"
+    # installation instructions from:
+    # https://www.virtualbox.org/wiki/Linux_Downloads
+    if [ -n "$(which apt-get)" ]; then
+        cat << _EOF_
+
+Debian distributions:
+
+1. focal
+2. bionic
+3. buster
+0. Quit (default)
+
+_EOF_
+    read -r -e -p "Select the system distribution used [0-3]: " SELECTION_REPLY
+    case "$SELECTION_REPLY" in
+    1)  DEBIAN_DISTRO="focal"
+        ;;
+    2)  DEBIAN_DISTRO="bionic"
+        ;;
+    3)  DEBIAN_DISTRO="buster"
+        ;;
+    *)  echo "exited"
+        return 2
+        ;;
+    esac
+    set -e
+    echo "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" | sudo tee --append /etc/apt/sources.list.d/virtualbox.list
+    # NOTE: keys are in the same repo but this may not always be a safe assumption
+    wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
+    wget --output-document - https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
+    sudo apt-get update
+    sudo apt-get install "$PACKAGE_NAME" --assume-yes
+    else 
+        echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
+        return 1
+    fi
+    set +e
+    echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
+    # no need to eject/return at this point, just signal to the user an issue if an error occurs
+    read -r -e -p "Do you want to install the extension pack for virtualbox, y/n? (n) " GET_EXT_PACK_REPLY
+    if [ "${GET_EXT_PACK_REPLY,,}" == "y" ]; then
+        if wget --quiet --output-document="$EXT_PACK_NAME" "$EXT_PACK_URL"; then
+            if ! sudo vboxmanage extpack install "$EXT_PACK_NAME"; then
+                echo -e "$ERROR failed to install extension pack for virtualbox!"
+            else
+                echo -e "$SUCCESS the extension pack for virtualbox was installed"
+            fi
+            rm "$EXT_PACK_NAME"
+        else
+            echo -e "$ERROR failed to download the extension pack for virtualbox!"
+        fi
+    fi
+    return 0
+}

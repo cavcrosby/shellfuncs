@@ -8,7 +8,7 @@
 # would be to setup software in a preferred way on 
 # a new machine. A new machine is defined as a recently
 # installed distro with very few 'things' installed.
-# Things in this case could be numerous things such as
+# Things in this case could be numerous in type such as
 # public/private keys, packages, etc.
 # Globals:
 #   OTHER_SCRIPTS_PATH
@@ -21,14 +21,22 @@ shellfuncs_new_devmachine_setup (){
 Scripted software installs:
 
 1. IDE/Editor
+2. Hypervisor
 0. Quit (default)
 
 _EOF_
-    read -r -e -p "Enter selection to run [0-1]: " SELECTION_REPLY
+    # TODO are all of these flags needed for read?
+    read -r -e -p "Enter selection to run [0-2]: " SELECTION_REPLY
     case "$SELECTION_REPLY" in
     1)  # shellcheck disable=SC1090
         source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_editor"
         shellfuncs_setup_editor
+        return
+        ;;
+    2)  # shellcheck disable=SC1090
+        source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_hypervisor"
+        shellfuncs_setup_hypervisor
+        return
         ;;
     *)  echo "exited"
         return 0
