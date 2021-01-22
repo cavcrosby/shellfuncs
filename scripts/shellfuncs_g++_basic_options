@@ -8,6 +8,6 @@
 #   Basic compilation options 
 #######################################
 shellfuncs_g++_basic_options () {
-    g++ --help | grep -e "-o\s\|-[c]\s\|-[S]\|-[E]"
+    g++ --help | grep --regexp="-o\s\|-[c]\s\|-[S]\|-[E]"
     return
 }

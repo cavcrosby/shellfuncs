@@ -6,13 +6,13 @@
 # Used to upgrade all deb packages except those
 # pertaining to grub.
 # Outputs:
-#   Normal apt installation output
+#   Normal apt-get installation output
 #######################################
 shellfuncs_upgrade_all_without_grub () {
-    sudo apt list --upgradable \
-    | grep -v grub \
-    | cut -f1 -d"/" \
-    | tail -n +2 \
-    | xargs -d '\n' -- sudo apt install -y 
+    sudo apt-get list --upgradable \
+    | grep --invert-match grub \
+    | cut --fields=1 --delimiter="/" \
+    | tail --lines=+2 \
+    | xargs --delimiter='\n' -- sudo apt-get install --assume-yes
     return
 }

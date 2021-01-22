@@ -3,7 +3,6 @@
 # user to pull scripts as shell functions in their
 # shell session.
 # Usage: curl --silent https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
-# TODO check through shellfuncs for command flags that be expanded into a long option
 set -e
 PWD="$(pwd)"
 PROGRAM_NAME="$(basename "$0")"

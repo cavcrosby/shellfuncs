@@ -13,4 +13,5 @@
 shellfuncs_enable_promiscuous_mode_esxi() {
     sudo chgrp adm "/dev/vmnet${1}"
     sudo chmod 660 "/dev/vmnet${1}"
+    return 
 }
