@@ -38,7 +38,6 @@ shellfuncs_setup_editor () {
 #   - 'dd' output to stdout
 #######################################
 _shellfuncs_setup_vscodium () {
-    # TODO tidy somethings up
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
     CODIUM_USER_SETTINGS_DIR="$(dirname "$CODIUM_USER_SETTINGS_PATH")"
@@ -55,8 +54,10 @@ _shellfuncs_setup_vscodium () {
             echo -e "$ERROR could not install all required system packages"
             return 1
         fi
-        wget --quiet --output-document - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
+        set -e
+        wget --output-document - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
         echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
+        set +e
         if sudo apt-get update && ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
             echo -e "$ERROR could not install editor package '$PACKAGE_NAME'"
             return 1
@@ -70,6 +71,7 @@ _shellfuncs_setup_vscodium () {
     # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
     read -r -e -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
     if [ "${GEN_KEY_REPLY,,}" == "y" ]; then
+        set -e
         gpg --full-generate-key
         # second pipe will have input that looks like this:
         # sec rsa<key size>/<gpg key id> <date> [SC]
@@ -80,6 +82,7 @@ _shellfuncs_setup_vscodium () {
         GPG_KEY_ID="$(gpg --list-secret-keys --keyid-format LONG | grep sec | grep -ohE "\/[[:alnum:]]+" | grep -ohE "[[:alnum:]]+")"
         git config --global user.signingkey "$GPG_KEY_ID"
         COMMIT_SIGNING_KEY_VALUE='{"git.enableCommitSigning": true}'
+        set +e
         if ! [ -d "$CODIUM_USER_SETTINGS_DIR)" ]; then mkdir --parents "$CODIUM_USER_SETTINGS_DIR"; fi
         # does the codium setting's file already exist and is it not empty
         if [ -f "$CODIUM_USER_SETTINGS_PATH" ] && [ -s "$CODIUM_USER_SETTINGS_PATH" ]; then
