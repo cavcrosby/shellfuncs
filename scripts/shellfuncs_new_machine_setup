@@ -22,11 +22,12 @@ Scripted software installs:
 
 1. IDE/Editor
 2. Hypervisor
+3. SMTP Client
 0. Quit (default)
 
 _EOF_
     # TODO are all of these flags needed for read?
-    read -r -e -p "Enter selection to run [0-2]: " SELECTION_REPLY
+    read -r -e -p "Enter selection to run [0-3]: " SELECTION_REPLY
     case "$SELECTION_REPLY" in
     1)  # shellcheck disable=SC1090
         source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_editor"
@@ -36,6 +37,11 @@ _EOF_
     2)  # shellcheck disable=SC1090
         source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_hypervisor"
         shellfuncs_setup_hypervisor
+        return
+        ;;
+    3)  # shellcheck disable=SC1090
+        source "${OTHER_SCRIPTS_PATH}/shellfuncs_setup_smtp_client"
+        shellfuncs_setup_smtp_client
         return
         ;;
     *)  echo "exited"

@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# Small setup script for smtp client of choice.
+# Usage: Can be ran standalone, but shellfuncs_setup_smtp_client is called 
+# from 'shellfuncs_new_machine_setup' script in same repo.
+
+#######################################
+# Installs smtp client of choice. This may include
+# a prompt in the future to select a smtp client to install.
+# Globals:
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   - Smtp function output to stdout
+#   - Additional success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+shellfuncs_setup_smtp_client () {
+    SMTP_CLIENT="msmtp"
+    if ! _shellfuncs_setup_msmtp; then
+        echo -e "$ERROR failed to install $SMTP_CLIENT!"
+        return 1
+    fi
+    echo -e "$SUCCESS $SMTP_CLIENT was successfully installed!"
+    return 0 
+}
+
+#######################################
+# Installs a sendmail compatible smtp client 
+# called msmtp. A solid page about the program:
+# https://wiki.archlinux.org/index.php/Msmtp
+# Globals:
+#   ERROR
+#   SUCCESS
+# Outputs:
+#   - Success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+_shellfuncs_setup_msmtp () {
+    # NOTE: msmtp-mta just creates a symlink to msmtp
+    # some suggest this makes cron's mailing system 'just work'
+    # https://superuser.com/questions/1289550/msmtp-vs-msmtp-mta-package-which-one-to-choose
+    PACKAGE_NAME="msmtp"
+    MTA_PACKAGE_NAME="msmtp-mta"
+    # installation instructions from:
+    # yes this is not debian but same process, just different package manager
+    # https://wiki.archlinux.org/index.php/Msmtp
+    if [ -n "$(which apt-get)" ]; then
+        set -e
+        # NOTE: not worried about dependencies as they seem fairly basic
+        sudo apt update
+        sudo apt install "$PACKAGE_NAME" "$MTA_PACKAGE_NAME" --assume-yes
+        set +e
+    else 
+        echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
+        return 1
+    fi
+    # TODO prompt to create a .msmtp file from default, allow the user to edit file and close then script finishes, perhaps use SELECTED_EDITOR?
+    set +e
+    echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
+    return 0
+}
