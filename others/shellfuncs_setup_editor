@@ -1,12 +1,12 @@
 #!/bin/bash
 #
 # Small setup script for editor of choice.
-# Usage: Can be installed standalone, but shellfuncs_setup_editor is called 
+# Usage: Can be ran standalone, but shellfuncs_setup_editor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
 #######################################
 # Installs editor of choice. This may include
-# a prompt in the future to select editor to install.
+# a prompt in the future to select a editor to install.
 # Globals:
 #   SUCCESS
 #   ERROR

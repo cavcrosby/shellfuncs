@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Small setup script for hypervisor of choice from dotfiles repo.
-# Usage: Can be installed standalone, but shellfuncs_setup_hypervisor is called 
+# Small setup script for hypervisor of choice.
+# Usage: Can be ran standalone, but shellfuncs_setup_hypervisor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
 #######################################
 # Installs hypervisor of choice. This may include
-# a prompt in the future to select hypervisor to install.
+# a prompt in the future to select a hypervisor to install.
 # Globals:
 #   SUCCESS
 #   ERROR
@@ -40,7 +40,6 @@ shellfuncs_setup_hypervisor () {
 #   SUCCESS
 # Outputs:
 #   - Success/error messages to stdout
-#   - 'dd' output to stdout
 # Returns:
 #   0 - general success
 #   1 - general error
@@ -68,30 +67,30 @@ Debian distributions:
 0. Quit (default)
 
 _EOF_
-    read -r -e -p "Select the system distribution used [0-3]: " SELECTION_REPLY
-    case "$SELECTION_REPLY" in
-    1)  DEBIAN_DISTRO="focal"
-        ;;
-    2)  DEBIAN_DISTRO="bionic"
-        ;;
-    3)  DEBIAN_DISTRO="buster"
-        ;;
-    *)  echo "exited"
-        return 2
-        ;;
-    esac
-    set -e
-    echo "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" | sudo tee --append /etc/apt/sources.list.d/virtualbox.list
-    # NOTE: keys are in the same repo but this may not always be a safe assumption
-    wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
-    wget --output-document - https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
-    sudo apt-get update
-    sudo apt-get install "$PACKAGE_NAME" --assume-yes
+        read -r -e -p "Select the system distribution used [0-3]: " SELECTION_REPLY
+        case "$SELECTION_REPLY" in
+        1)  DEBIAN_DISTRO="focal"
+            ;;
+        2)  DEBIAN_DISTRO="bionic"
+            ;;
+        3)  DEBIAN_DISTRO="buster"
+            ;;
+        *)  echo "exited"
+            return 2
+            ;;
+        esac
+        set -e
+        echo "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" | sudo tee --append /etc/apt/sources.list.d/virtualbox.list
+        # NOTE: keys are in the same repo but this may not always be a safe assumption
+        wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
+        wget --output-document - https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
+        sudo apt-get update
+        sudo apt-get install "$PACKAGE_NAME" --assume-yes
+        set +e
     else 
         echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
         return 1
     fi
-    set +e
     echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
     # no need to eject/return at this point, just signal to the user an issue if an error occurs
     read -r -e -p "Do you want to install the extension pack for virtualbox, y/n? (n) " GET_EXT_PACK_REPLY
