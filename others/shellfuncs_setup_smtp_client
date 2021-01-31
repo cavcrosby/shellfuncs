@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# Small setup script for smtp client of choice.
+# Usage: Can be ran standalone, but shellfuncs_setup_smtp_client is called 
+# from 'shellfuncs_new_machine_setup' script in same repo.
+
+#######################################
+# Installs smtp client of choice. This may include
+# a prompt in the future to select a smtp client to install.
+# Globals:
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   - Smtp function output to stdout
+#   - Additional success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+shellfuncs_setup_smtp_client () {
+    SMTP_CLIENT="msmtp"
+    if ! _shellfuncs_setup_msmtp; then
+        echo -e "$ERROR failed to install $SMTP_CLIENT!"
+        return 1
+    fi
+    echo -e "$SUCCESS $SMTP_CLIENT was successfully installed!"
+    return 0 
+}
+
+#######################################
+# Installs a sendmail compatible smtp client 
+# called msmtp. A solid page about the program:
+# https://wiki.archlinux.org/index.php/Msmtp
+# Globals:
+#   ERROR
+#   SUCCESS
+#   EDITOR
+# Outputs:
+#   - Success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+_shellfuncs_setup_msmtp () {
+    # NOTE: msmtp-mta just creates a symlink to msmtp
+    # some suggest this makes cron's mailing system 'just work'
+    # https://superuser.com/questions/1289550/msmtp-vs-msmtp-mta-package-which-one-to-choose
+    PACKAGE_NAME="msmtp"
+    MTA_PACKAGE_NAME="msmtp-mta"
+    MSMTP_DOTFILE_NAME=".msmtp"
+    EXAMPLE_MSMTP_USER_CONFIGURATION_PATH="/usr/share/doc/msmtp/examples/msmtprc-user.example"
+    # installation instructions from:
+    # yes this is not debian but same process, just different package manager
+    # https://wiki.archlinux.org/index.php/Msmtp
+    if [ -n "$(which apt-get)" ]; then
+        if ! sudo apt update; then return 1; fi
+        if ! sudo apt install "$PACKAGE_NAME" "$MTA_PACKAGE_NAME" --assume-yes; then return 1; fi
+    else 
+        echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
+        return 1
+    fi
+    echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
+    read -r -e -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
+    if [ "${MSMTP_DOTFILE_REPLY,,}" == "y" ]; then
+        if ! cp "$EXAMPLE_MSMTP_USER_CONFIGURATION_PATH" "${HOME}/${MSMTP_DOTFILE_NAME}"; then return 1; fi
+        if [ -z "$EDITOR" ]; then
+            read -r -e -p "Enter name/path of a editor to use (can also supply args as to a command) ==> " EDITOR
+        fi
+        read -r -a EDITOR_ARR <<< "$EDITOR"
+        for index in "${!EDITOR_ARR[@]}"; do
+            if [ "$index" -eq 0 ]; then
+                EDITOR_ARR["$index"]="$(which "${EDITOR_ARR[$index]}")"
+            fi
+        done
+        if ! "${EDITOR_ARR[@]}" "${HOME}/${MSMTP_DOTFILE_NAME}"; then return 1; fi
+    fi
+    # TODO add another prompt for system configuration or user configuration file for msmtp, maybe
+    return 0
+}
