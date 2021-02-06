@@ -53,8 +53,8 @@ _shellfuncs_setup_msmtp () {
     # yes this is not debian but same process, just different package manager
     # https://wiki.archlinux.org/index.php/Msmtp
     if [ -n "$(which apt-get)" ]; then
-        if ! sudo apt update; then return 1; fi
-        if ! sudo apt install "$PACKAGE_NAME" "$MTA_PACKAGE_NAME" --assume-yes; then return 1; fi
+        sudo apt update || return 1
+        sudo apt install "$PACKAGE_NAME" "$MTA_PACKAGE_NAME" --assume-yes || return 1
     else 
         echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
         return 1
@@ -62,7 +62,7 @@ _shellfuncs_setup_msmtp () {
     echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
     read -r -e -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
     if [ "${MSMTP_DOTFILE_REPLY,,}" == "y" ]; then
-        if ! cp "$EXAMPLE_MSMTP_USER_CONFIGURATION_PATH" "${HOME}/${MSMTP_DOTFILE_NAME}"; then return 1; fi
+        cp "$EXAMPLE_MSMTP_USER_CONFIGURATION_PATH" "${HOME}/${MSMTP_DOTFILE_NAME}" || return 1
         if [ -z "$EDITOR" ]; then
             read -r -e -p "Enter name/path of a editor to use (can also supply args as to a command) ==> " EDITOR
         fi
@@ -72,7 +72,7 @@ _shellfuncs_setup_msmtp () {
                 EDITOR_ARR["$index"]="$(which "${EDITOR_ARR[$index]}")"
             fi
         done
-        if ! "${EDITOR_ARR[@]}" "${HOME}/${MSMTP_DOTFILE_NAME}"; then return 1; fi
+        "${EDITOR_ARR[@]}" "${HOME}/${MSMTP_DOTFILE_NAME}" || return 1
     fi
     # TODO(conner@conneracrosby.tech): add another prompt for system configuration or user configuration file for msmtp, maybe
     return 0

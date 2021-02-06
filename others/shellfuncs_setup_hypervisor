@@ -79,15 +79,12 @@ _EOF_
             return 2
             ;;
         esac
-        set -e
-        # TODO(conner@conneracrosby.tech): get rid of 'set -e's and evaluate statements that need 'if ! checks' (not just here, other places too)
-        echo "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" | sudo tee --append /etc/apt/sources.list.d/virtualbox.list
+        sudo tee <<< "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" --append /etc/apt/sources.list.d/virtualbox.list || return 1
         # NOTE: keys are in the same repo but this may not always be a safe assumption
-        wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
-        wget --output-document - https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
-        sudo apt-get update
-        sudo apt-get install "$PACKAGE_NAME" --assume-yes
-        set +e
+        if ! wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -; then return 1; fi
+        if ! wget --output-document - https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -; then return 1; fi
+        sudo apt-get update || return 1
+        sudo apt-get install "$PACKAGE_NAME" --assume-yes || return 1
     else 
         echo -e "$ERROR system does not have a expected packaging tool to install $PACKAGE_NAME"
         return 1
