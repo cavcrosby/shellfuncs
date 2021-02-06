@@ -74,6 +74,6 @@ _shellfuncs_setup_msmtp () {
         done
         if ! "${EDITOR_ARR[@]}" "${HOME}/${MSMTP_DOTFILE_NAME}"; then return 1; fi
     fi
-    # TODO add another prompt for system configuration or user configuration file for msmtp, maybe
+    # TODO(conner@conneracrosby.tech): add another prompt for system configuration or user configuration file for msmtp, maybe
     return 0
 }

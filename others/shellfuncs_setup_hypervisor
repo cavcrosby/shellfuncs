@@ -80,7 +80,7 @@ _EOF_
             ;;
         esac
         set -e
-        # TODO get rid of 'set -e's and evaluate statements that need 'if ! checks' (not just here, other places too)
+        # TODO(conner@conneracrosby.tech): get rid of 'set -e's and evaluate statements that need 'if ! checks' (not just here, other places too)
         echo "deb [arch=amd64] $VIRTUALBOX_DEB_REPO_URL $DEBIAN_DISTRO contrib" | sudo tee --append /etc/apt/sources.list.d/virtualbox.list
         # NOTE: keys are in the same repo but this may not always be a safe assumption
         wget --output-document - https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -

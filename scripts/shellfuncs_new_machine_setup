@@ -26,7 +26,7 @@ Scripted software installs:
 0. Quit (default)
 
 _EOF_
-    # TODO are all of these flags needed for read?
+    # TODO(conner@conneracrosby.tech): are all of these flags needed for read?
     read -r -e -p "Enter selection to run [0-3]: " SELECTION_REPLY
     case "$SELECTION_REPLY" in
     1)  # shellcheck disable=SC1090
