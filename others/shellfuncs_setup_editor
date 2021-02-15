@@ -73,7 +73,7 @@ _shellfuncs_setup_vscodium () {
     echo -e "$SUCCESS installed all required system packages and package '$PACKAGE_NAME'"
     # generating gpg keys is based on this article:
     # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
-    read -r -e -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
+    read -r -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
     if [ "${GEN_KEY_REPLY,,}" == "y" ]; then
         set -e
         gpg --full-generate-key

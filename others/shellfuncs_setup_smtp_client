@@ -61,11 +61,11 @@ _shellfuncs_setup_msmtp () {
         return 1
     fi
     echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
-    read -r -e -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
+    read -r -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
     if [ "${MSMTP_DOTFILE_REPLY,,}" == "y" ]; then
         cp "$EXAMPLE_MSMTP_USER_CONFIGURATION_PATH" "${HOME}/${MSMTP_DOTFILE_NAME}" || return 1
         if [ -z "$EDITOR" ]; then
-            read -r -e -p "Enter name/path of a editor to use (can also supply args as to a command) ==> " EDITOR
+            read -r -p "Enter name/path of a editor to use (can also supply args as to a command) ==> " EDITOR
         fi
         read -r -a EDITOR_ARR <<< "$EDITOR"
         for index in "${!EDITOR_ARR[@]}"; do
