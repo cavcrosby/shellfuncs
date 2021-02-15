@@ -7,7 +7,7 @@
 # Usage: curl --silent https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
 
 set -e
-PROGRAM_NAME="$(basename "$0")"
+PROGRAM_NAME="install"
 DEFAULT_SHELL_DOTFILE_NAME=".bashrc"
 LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
