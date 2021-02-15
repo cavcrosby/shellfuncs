@@ -11,6 +11,9 @@
 #   Extension name with the newer/local version number,
 #   it is assumed the marketplace version will never
 #   be older than what is locally installed.
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_show_codium_exts_updates () {
     for extension in $(codium --list-extensions --show-versions); do

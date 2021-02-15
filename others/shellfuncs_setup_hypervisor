@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+# Part of 'shellfuncs' git repo
 # Small setup script for hypervisor of choice.
 # Usage: Can be ran standalone, but shellfuncs_setup_hypervisor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
@@ -20,9 +21,9 @@
 shellfuncs_setup_hypervisor () {
     HYPERVISOR="virtualbox"
     _shellfuncs_setup_virtualbox || EXIT_STATUS=$?
-    if [ "$EXIT_STATUS" -eq 2 ]; then
+    if [ $EXIT_STATUS -eq 2 ]; then
         return 0
-    elif [ "$EXIT_STATUS" -ne 0 ]; then
+    elif [ $EXIT_STATUS -ne 0 ]; then
         echo -e "$ERROR failed to install $HYPERVISOR!"
         return 1
     else
@@ -43,7 +44,6 @@ shellfuncs_setup_hypervisor () {
 # Returns:
 #   0 - general success
 #   1 - general error
-#   $? -ne 0 || $? -ne 2; then error
 #   2 - prompted exit from interactive menu
 #######################################
 _shellfuncs_setup_virtualbox () {

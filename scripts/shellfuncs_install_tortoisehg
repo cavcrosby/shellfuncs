@@ -14,6 +14,9 @@ PROGRAM_NAME=""
 #   - Error outputs from pip/apt-get/make/cd/mkdir
 #       - In other words most commands in this script do
 #       not filter stdout/stderr output
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_install_tortoisehg () {
     # NOTE: getting the PROGRAM_NAME currently is bash specfic

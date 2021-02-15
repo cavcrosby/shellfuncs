@@ -9,9 +9,12 @@
 # using VMware's esxi.
 # Arguments:
 #   $1: Positive integer denoting vmnet virtual network
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_enable_promiscuous_mode_esxi() {
-    sudo chgrp adm "/dev/vmnet${1}"
-    sudo chmod 660 "/dev/vmnet${1}"
-    return 
+    sudo chgrp adm "/dev/vmnet${1}" || return 1
+    sudo chmod 660 "/dev/vmnet${1}" || return 1
+    return 0
 }

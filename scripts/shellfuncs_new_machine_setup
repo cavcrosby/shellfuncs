@@ -14,6 +14,9 @@
 #   OTHER_SCRIPTS_PATH
 # Outputs:
 #   - Success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_new_devmachine_setup (){
     cat << _EOF_

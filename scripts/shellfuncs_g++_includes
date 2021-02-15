@@ -9,8 +9,11 @@
 # Outputs:
 #   Directories where preprocessor looks for 
 #   includes
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_g++_includes () {
-    "$(gcc -print-prog-name=cc1plus)" -v -E - < /dev/null
-    return
+    "$(gcc -print-prog-name=cc1plus)" -v -E - < /dev/null || return 1
+    return 0
 }

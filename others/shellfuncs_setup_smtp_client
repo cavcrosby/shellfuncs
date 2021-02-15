@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+# Part of 'shellfuncs' git repo
 # Small setup script for smtp client of choice.
 # Usage: Can be ran standalone, but shellfuncs_setup_smtp_client is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.

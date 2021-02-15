@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+# Part of 'shellfuncs' git repo
 # Small setup script for editor of choice.
 # Usage: Can be ran standalone, but shellfuncs_setup_editor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
@@ -13,6 +14,9 @@
 # Outputs:
 #   - Editor function output to stdout
 #   - Additional success/error messages to stdout
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_setup_editor () {
     EDITOR="vscodium"

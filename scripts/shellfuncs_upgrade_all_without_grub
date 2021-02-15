@@ -7,6 +7,9 @@
 # pertaining to grub.
 # Outputs:
 #   Normal apt-get installation output
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_upgrade_all_without_grub () {
     sudo apt-get list --upgradable \

@@ -6,8 +6,11 @@
 # Used to show basic options for gnu c++ compiler.
 # Outputs:
 #   Basic compilation options 
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_g++_basic_options () {
-    g++ --help | grep --regexp="-o\s\|-[c]\s\|-[S]\|-[E]"
-    return
+    grep --regexp="-o\s\|-[c]\s\|-[S]\|-[E]" <<< "$(g++ --help)" || return 1
+    return 0
 }

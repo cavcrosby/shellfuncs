@@ -8,10 +8,13 @@
 # assumes 'bootinfoscript' can be found through PATH.
 # Outputs:
 #   Hard disk information in relation to bootloaders
+# Returns:
+#   0 - general success
+#   1 - general error
 #######################################
 shellfuncs_bootinfoscript () {
-    cd "$(dirname "$(which bootinfoscript)")" || exit
-    sudo ./bootinfoscript --stdout
-    cd - > /dev/null || exit
-    return
+    cd "$(dirname "$(which bootinfoscript)")" || return 1
+    sudo ./bootinfoscript --stdout || return 1
+    cd - > /dev/null || return 1
+    return 0
 }
