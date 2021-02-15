@@ -106,7 +106,7 @@ Terminal=false
 Type=Application
 Icon=$DESTINATION_DIR_PATH/icons/thg_logo.ico
 _EOF_
-    if [ $? -ne 0 ] ; then
+    if [ "$?" -ne 0 ] ; then
         echo -e "$ERROR could not install desktop entry"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi

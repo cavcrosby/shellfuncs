@@ -20,10 +20,10 @@
 #######################################
 shellfuncs_setup_hypervisor () {
     HYPERVISOR="virtualbox"
-    _shellfuncs_setup_virtualbox || EXIT_STATUS=$?
-    if [ $EXIT_STATUS -eq 2 ]; then
+    _shellfuncs_setup_virtualbox || EXIT_STATUS="$?"
+    if [ "$EXIT_STATUS" -eq 2 ]; then
         return 0
-    elif [ $EXIT_STATUS -ne 0 ]; then
+    elif [ "$EXIT_STATUS" -ne 0 ]; then
         echo -e "$ERROR failed to install $HYPERVISOR!"
         return 1
     else
