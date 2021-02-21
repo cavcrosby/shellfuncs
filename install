@@ -53,8 +53,8 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 	echo ""
 	echo "# Part of $LOCAL_REPO_NAME git repo"
 	echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
-	echo "SCRIPTS_PATH=$SCRIPTS_PATH"
-	echo "OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
+	echo "SHELLFUNCS_SCRIPTS_PATH=$SCRIPTS_PATH"
+	echo "SHELLFUNCS_OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
 	if [ -z "$SUCCESS" ] || [ -z "$ERROR" ] || [ -z "$WARNING" ]; then
 		echo "# ANSI escape code sequences for status messages with character coloring"
 	fi
@@ -71,11 +71,11 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 	echo ""
 	cat << '_EOF_'
 #######################################
-# Loads each 'shellfuncs' script into from SCRIPTS_PATH
+# Loads each 'shellfuncs' script into from SHELLFUNCS_SCRIPTS_PATH
 # the current shell session.
 # Globals:
 #   SHELLFUNCS_REPO_PATH
-#   SCRIPTS_PATH
+#   SHELLFUNCS_SCRIPTS_PATH
 #   SUCCESS
 #   ERROR
 # Outputs:
@@ -83,10 +83,10 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 #######################################
 load_shellfuncs () {
     if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
-        SCRIPT_NAMES="$(ls -1 "$SCRIPTS_PATH")"
+        SCRIPT_NAMES="$(ls -1 "$SHELLFUNCS_SCRIPTS_PATH")"
         # shellcheck source=/dev/null
         for script_name in $SCRIPT_NAMES; do
-            . "$SCRIPTS_PATH/$script_name"
+            . "$SHELLFUNCS_SCRIPTS_PATH/$script_name"
         done
         echo -e "$SUCCESS Loaded 'shellfuncs' repo scripts"
     else
