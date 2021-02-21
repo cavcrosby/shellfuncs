@@ -2,7 +2,8 @@
 
 This repo serves as a repository of Bourne shell <code>sh</code> scripts that I wish to sync across *nix systems. Even though these scripts are for my personal needs, I also do attempt to generalize the scripts in the following ways:
 
-* Mostly exclude shell (any Bourne shell should work) specfic code (e.g. '[[' for test and ';;&' for case statements in <code>bash</code>), references to shell specfic code will be made noted
+* Exclude shell (any Bourne shell should work) specfic code (e.g. '[[' for test and ';;&' for case statements in <code>bash</code>)
+  * Unfortunately there is more bash specfic shell code than I imagined, so best bet currently is the use bash with shellfuncs
 * Some of the scripts make use of environment vars in my personal dotfiles. The scripts will prompt for information they need.
 
 When installed, in each new shell session, scripts inside the 'scripts' directory will be pulled into the shell session where the containing functions of each script (most scripts contain one function named after the file itself) can be invoked.
