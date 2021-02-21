@@ -86,7 +86,7 @@ load_shellfuncs () {
         SCRIPT_NAMES="$(ls -1 "$SCRIPTS_PATH")"
         # shellcheck source=/dev/null
         for script_name in $SCRIPT_NAMES; do
-            source "$SCRIPTS_PATH/$script_name"
+            . "$SCRIPTS_PATH/$script_name"
         done
         echo -e "$SUCCESS Loaded 'shellfuncs' repo scripts"
     else
