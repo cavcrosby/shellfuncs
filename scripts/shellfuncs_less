@@ -7,7 +7,7 @@
 # scripts. Perhaps in the future, arguments past 1
 # could be passed in as additional options to less (e.g. --foo, -b).
 # Globals:
-#   SCRIPTS_PATH
+#   SHELLFUNCS_SCRIPTS_PATH
 # Arguments:
 #   $1: the shellfuncs script name to pass as 
 #       an argument to less
@@ -17,15 +17,15 @@
 #######################################
 shellfuncs_less () {
     # shellcheck disable=SC1091
-    less "${SCRIPTS_PATH}/${1}" || return 1
+    less "${SHELLFUNCS_SCRIPTS_PATH}/${1}" || return 1
     return 0
 }
 
 #######################################
 # Bash tab completion for shellfuncs_less,
-# displays all scripts in SCRIPTS_PATH.
+# displays all scripts in SHELLFUNCS_SCRIPTS_PATH.
 # Globals:
-#   SCRIPTS_PATH
+#   SHELLFUNCS_SCRIPTS_PATH
 # Outputs:
 #   shellfunc scripts that can be viewed
 # Returns:
@@ -33,7 +33,7 @@ shellfuncs_less () {
 #   1 - general error
 #######################################
 _shellfuncs_less_completion () {
-    complete -W "$(ls "${SCRIPTS_PATH}")" shellfuncs_less || return 1
+    complete -W "$(ls "${SHELLFUNCS_SCRIPTS_PATH}")" shellfuncs_less || return 1
     return 0
 }
 

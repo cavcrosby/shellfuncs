@@ -83,10 +83,9 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 #######################################
 load_shellfuncs () {
     if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
-        SCRIPT_NAMES="$(ls -1 "$SHELLFUNCS_SCRIPTS_PATH")"
         # shellcheck source=/dev/null
-        for script_name in $SCRIPT_NAMES; do
-            . "$SHELLFUNCS_SCRIPTS_PATH/$script_name"
+		for script_name in "${SHELLFUNCS_SCRIPTS_PATH}/"*; do
+            . "$script_name"
         done
         echo -e "$SUCCESS Loaded 'shellfuncs' repo scripts"
     else
