@@ -8,7 +8,7 @@
 
 set -e
 PROGRAM_NAME="install"
-DEFAULT_SHELL_DOTFILE_NAME=".bashrc"
+DEFAULT_SHELL_DOTFILE_NAME=".profile"
 LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
 OTHER_SCRIPTS_DIR_NAME="others"
