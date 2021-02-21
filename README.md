@@ -2,7 +2,7 @@
 
 This repo serves as a repository of Bourne shell <code>sh</code> scripts that I wish to sync across *nix systems. Even though these scripts are for my personal needs, I also do attempt to generalize the scripts in the following ways:
 
-* Exclude shell (any Bourne shell should work) specfic code (e.g. '[[' for test and ';;&' for case statements in <code>bash</code>)
+* Exclude shell (any Bourne shell should work, compliant with POSIX) specfic code (e.g. '[[' for test and ';;&' for case statements in <code>bash</code>)
   * Unfortunately there is more bash specfic shell code than I imagined, so best bet currently is the use bash with shellfuncs
 * Some of the scripts make use of environment vars in my personal dotfiles. The scripts will prompt for information they need.
 
