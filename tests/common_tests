@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# These are common tests for all the 
+# shellfunc test scripts.
+
+testshellfunc_loaded () {
+	# is the shellfunc loaded into the shell session?
+	type "$SHELLFUNC_NAME" > /dev/null 2>&1
+	EXIT_STATUS="$?"
+	assertEquals "$SHELLFUNC_NAME is not in current shell session" 0 "$EXIT_STATUS"
+	
+	# NOTE: return 0 is needed at the moment because otherwise one failure is counted twice
+	# TODO(conner@conneracrosby.tech): monitor this issue to see if this gets fixed in future releases
+	# https://github.com/kward/shunit2/pull/140
+	return 0
+}
+
+testshellfunc_exec () {
+	# NOTE: This test should be only used  if the shell function 
+	# is noninteractive
+	"$SHELLFUNC_NAME" > /dev/null 2>&1
+	EXIT_STATUS="$?"
+	assertEquals "$SHELLFUNC_NAME returned a non-zero status code" 0 "$EXIT_STATUS"
+	return 0
+}
