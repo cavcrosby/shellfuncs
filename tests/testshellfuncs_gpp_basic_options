@@ -2,10 +2,9 @@
 #
 # shellcheck disable=1091,2005
 
-oneTimeSetUp () {
-	. "./.env"
-	SHELLFUNC_NAME="$(echo "$(basename "$0")" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
-}
+. "./.env"
+PROGRAM_NAME=$(basename "$0")
+SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
 
 suite () {
 	# suite_addTest has to be used, else shunit2 will not
@@ -19,4 +18,3 @@ suite () {
 
 # load shUnit2.
 . "./shunit2"
-

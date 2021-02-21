@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,2005
+
+. "./.env"
+PROGRAM_NAME=$(basename "$0")
+SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
+
+if [ -z "$(which codium)" ]; then
+	echo -e "${PROGRAM_NAME}: codium executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
+	exit 0
+fi
+
+suite () {
+	# suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	suite_addTest testshellfunc_loaded
+	suite_addTest testshellfunc_exec
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2.
+. "./shunit2"
