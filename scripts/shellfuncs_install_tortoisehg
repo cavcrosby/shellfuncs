@@ -4,7 +4,7 @@
 # Inspired by: https://askubuntu.com/questions/1182598/how-to-install-tortoisehg-on-ubuntu-19-10#answer-1246183
 
 # This is determined in the main shellfunc function
-#PROGRAM_NAME=""
+SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME=""
 
 #######################################
 # Installs tortoisehg for the desktop.
@@ -21,10 +21,10 @@
 shellfuncs_install_tortoisehg () {
     # NOTE: getting the PROGRAM_NAME currently is bash specfic
     # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
-    PROGRAM_NAME="${FUNCNAME[0]}"
+    SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME="${FUNCNAME[0]}"
     DESTINATION_DIR_PATH="${HOME}/tortoisehg"
     PYTHON_EXECUTABLE="$(which python3)"
-    TEMP_DIR_NAME="${PROGRAM_NAME}_temp"
+    TEMP_DIR_NAME="${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}_temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
     BRANCH="stable"
     SYSTEM_DEPENDENCIES=(
@@ -43,14 +43,14 @@ shellfuncs_install_tortoisehg () {
     # make a folder to hold the tortoise source
     mkdir "$DESTINATION_DIR_PATH" || return 1
     ! cd "$DESTINATION_DIR_PATH" && _shellfuncs_install_tortoisehg_cleanup && return 1
-    echo "${PROGRAM_NAME}: inside destination directory"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: inside destination directory"
 
     # probably need to check to make sure a python 3 interpreter was loaded into PYTHON_EXECUTABLE
     if [ -z "$PYTHON_EXECUTABLE" ] || [ "$($PYTHON_EXECUTABLE --version | grep -e "Python 3\..*" -c)" -eq 0 ]; then
         echo -e "$ERROR 'python3' does not point to a python 3 interpreter"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: 'python3' symlink points to a python 3 interpreter!"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: 'python3' symlink points to a python 3 interpreter!"
     sleep 2
 
     # now to install system dependencies
@@ -58,7 +58,7 @@ shellfuncs_install_tortoisehg () {
         echo -e "$ERROR could not install all system packages"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: installed system dependencies"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: installed system dependencies"
 
     # make sure that python utilities are up to date
     # NOTE: I usually put double quotes around all my shell variables in scripts 
@@ -69,14 +69,14 @@ shellfuncs_install_tortoisehg () {
         echo -e "$ERROR could not install all python packages"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: Installed python dependencies"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: Installed python dependencies"
     
     # lets build tortoisehg now, and install a desktop entry!
     if ! hg clone "$TORTOISEHG_REPO_URL" --rev "$BRANCH" "$PWD"; then
         echo -e "$ERROR could not download tortoisehg source"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: got the goods (aka source code)!"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: got the goods (aka source code)!"
     sleep 2
 
     # to prevent tortoisehg from tripping on itself, I decided that I would slot
@@ -95,7 +95,7 @@ shellfuncs_install_tortoisehg () {
         echo -e "$ERROR build failed"
         _shellfuncs_install_tortoisehg_cleanup && return 1
     fi
-    echo "${PROGRAM_NAME}: finally, build from source was successful"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: finally, build from source was successful"
     rm --recursive --force "$TEMP_DIR_NAME"
     cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
 [Desktop Entry]
@@ -115,7 +115,7 @@ _EOF_
 }
 
 _shellfuncs_install_tortoisehg_cleanup (){
-    echo "${PROGRAM_NAME}: cleaning up, installed package(s) will not be uninstalled!"
+    echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: cleaning up, installed package(s) will not be uninstalled!"
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
     [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..
     [ -d "$DESTINATION_DIR_BASENAME" ] && rm --recursive --force "$DESTINATION_DIR_PATH"

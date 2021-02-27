@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,2005,1090
+
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+if [ -z "$(which codium)" ]; then
+	echo "${PROGRAM_NAME}: codium executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
+	exit 0
+fi
+
+suite () {
+	# NOTE: suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	#
+	# 'shellcheck' extension on marketplace:
+	# https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck
+	EXTENSION='timonwong.shellcheck'
+	EXTENSION_VERSION='0.13.2'
+	export ARGS="$EXTENSION $EXTENSION_VERSION"
+	suite_addTest testshellfunc_exec
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2.
+. "./shunit2"
+

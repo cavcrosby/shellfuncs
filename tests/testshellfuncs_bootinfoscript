@@ -1,8 +1,17 @@
 #!/bin/bash
 #
 # shellcheck disable=1091,2005,1090
+# Usage (or at least an idea on how to use): 
+# sudo SHELLFUNCS_TEST_SCRIPTS_ENV_PATH="${HOME}/git/shellfuncs/tests/.env" "PATH=${PATH}" ./testshellfuncs_bootinfoscript 
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+# check to see if I am root
+ROOT_ID=0
+if [ "$(id --user)" != "$ROOT_ID" ]; then
+    echo "${PROGRAM_NAME}: must be root to run script! $SKIPPING_TEST_MESSAGE"
+    exit 0
+fi
 
 if [ -z "$(which bootinfoscript)" ]; then
 	echo "${PROGRAM_NAME}: bootinfoscript executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
