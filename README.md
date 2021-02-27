@@ -8,6 +8,10 @@ This repo serves as a repository of Bourne shell <code>sh</code> scripts that I 
 
 When installed, in each new shell session, scripts inside the 'scripts' directory will be pulled into the shell session where the containing functions of each script (most scripts contain one function named after the file itself) can be invoked.
 
+## Usage
+
+My suggestion is to fork shellfuncs, as these scripts (and by extension repo) will constantly change.
+
 ## Installation
 
 The install script can be piped into a different shell of choice, currently mine is <code>bash</code>.
