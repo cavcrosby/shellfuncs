@@ -12,6 +12,8 @@ DEFAULT_SHELL_DOTFILE_NAME=".profile"
 LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
 OTHER_SCRIPTS_DIR_NAME="others"
+TEST_SCRIPTS_DIR_NAME="tests"
+TEST_SCRIPTS_ENV_FILENAME=".env"
 # where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
 
@@ -24,13 +26,16 @@ if [ -z "$GIT_REPOS_PATH" ]; then
 	read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
 fi
 
-if [ -z "$SHELL_DOTFILE_TO_WRITE_TO" ]; then
-	SHELL_DOTFILE_TO_WRITE_TO=$DEFAULT_SHELL_DOTFILE_NAME
+if [ -z "$SHELL_DOTFILE_NAME" ]; then
+	SHELL_DOTFILE_NAME=$DEFAULT_SHELL_DOTFILE_NAME
 fi
 
 LOCAL_REPO_PATH="${GIT_REPOS_PATH}/${LOCAL_REPO_NAME}"
 SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
 OTHER_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${OTHER_SCRIPTS_DIR_NAME}"
+TEST_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${TEST_SCRIPTS_DIR_NAME}"
+TEST_ENV_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_FILENAME}"
+SHELL_DOTFILE_PATH="${HOME}/${SHELL_DOTFILE_NAME}"
 
 # shellcheck disable=2034
 read -r -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
@@ -38,7 +43,7 @@ read -r -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
 # using parameter expansion, ',,' append will convert the string to lowercase
 if [ "${RE_INSTALL_REPLY,,}" == "y" ]; then
 	if [ -d "$LOCAL_REPO_PATH" ]; then
-		echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${SHELL_DOTFILE_TO_WRITE_TO}' may still contain 'install' functions"
+		echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${SHELL_DOTFILE_NAME}' may still contain 'install' functions"
 		read -r -p "Proceed with reinstall, y/n? (n) " PROCEED_REINSTALLED_REPLY <&1
 		if [ "${PROCEED_REINSTALLED_REPLY,,}" == "y" ]; then
 			rm --recursive --force "$LOCAL_REPO_PATH"
@@ -49,12 +54,14 @@ if [ "${RE_INSTALL_REPLY,,}" == "y" ]; then
 fi
 
 git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
+# setups dotfile to allow the shell to pull in shell scripts and to update the local repo
 {
 	echo ""
 	echo "# Part of $LOCAL_REPO_NAME git repo"
 	echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
 	echo "SHELLFUNCS_SCRIPTS_PATH=$SCRIPTS_PATH"
 	echo "SHELLFUNCS_OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
+	echo "export SHELLFUNCS_TEST_SCRIPTS_ENV_PATH=$TEST_ENV_PATH"
 	if [ -z "$SUCCESS" ] || [ -z "$ERROR" ] || [ -z "$WARNING" ]; then
 		echo "# ANSI escape code sequences for status messages with character coloring"
 	fi
@@ -121,8 +128,56 @@ update_shellfuncs
 load_shellfuncs
 _EOF_
 
-} >> "${HOME}/${SHELL_DOTFILE_TO_WRITE_TO}"
+} >> "$SHELL_DOTFILE_PATH"
 
+# setups test env dotfile to allow the shell to pull in additional shell scripts from 'others' 
+# and insert a env var that points to the original shell dotfile used during the install
+{
+	echo "SHELL_DOTFILE_PATH=$SHELL_DOTFILE_PATH"
+    # shellcheck disable=2016
+	echo '. "$SHELL_DOTFILE_PATH" > /dev/null 2>&1'
+	echo ""
+		cat << '_EOF_'
+#######################################
+# Loads each 'shellfuncs' script into from 
+# SHELLFUNCS_OTHER_SCRIPTS_PATH the current shell session.
+# Globals:
+#   SHELLFUNCS_REPO_PATH
+#   SHELLFUNCS_OTHER_SCRIPTS_PATH
+#   SUCCESS
+#   ERROR
+# Outputs:
+#   ERROR: If shellfuncs repo could not be found
+#######################################
+load_other_shellfuncs () {
+    if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
+        # shellcheck source=/dev/null
+        for script_name in "${SHELLFUNCS_OTHER_SCRIPTS_PATH}/"*; do
+            . "$script_name"
+        done
+        # is the current shell interpreting this bash?
+        # NOTE: default will be considered some 'sh', assuming backslashes are already interpreted
+        if [ -n "${BASH_VERSION:-}" ]; then
+            echo -e "$SUCCESS Loaded 'shellfuncs' repo OTHER scripts" > /dev/null 2>&1
+        else
+            echo "$SUCCESS Loaded 'shellfuncs' repo OTHER scripts" > /dev/null 2>&1
+        fi
+    else
+        if [ -n "${BASH_VERSION:-}" ]; then
+            echo -e "$ERROR 'shellfuncs' repo could not be found, failed to load OTHER scripts"
+        else
+            echo "$ERROR 'shellfuncs' repo could not be found, failed to load OTHER scripts"
+        fi
+        return 1
+    fi
+    return 0
+}
+
+load_other_shellfuncs
+_EOF_
+} >> "$TEST_ENV_PATH"
+
+clear
 echo -e "$SUCCESS installation was successfull! Restart your shell session to pull in/update scripts"
 
 exit 0

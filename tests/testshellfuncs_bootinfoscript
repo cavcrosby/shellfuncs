@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# shellcheck disable=1091,2005
+# shellcheck disable=1091,2005,1090
 
-. "./.env"
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
 if [ -z "$(which bootinfoscript)" ]; then
 	echo "${PROGRAM_NAME}: bootinfoscript executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
