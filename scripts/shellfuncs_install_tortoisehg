@@ -4,7 +4,7 @@
 # Inspired by: https://askubuntu.com/questions/1182598/how-to-install-tortoisehg-on-ubuntu-19-10#answer-1246183
 
 # This is determined in the main shellfunc function
-PROGRAM_NAME=""
+#PROGRAM_NAME=""
 
 #######################################
 # Installs tortoisehg for the desktop.
