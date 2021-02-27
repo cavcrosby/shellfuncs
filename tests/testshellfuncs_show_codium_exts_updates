@@ -3,11 +3,9 @@
 # shellcheck disable=1091,2005
 
 . "./.env"
-PROGRAM_NAME=$(basename "$0")
-SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
 
 if [ -z "$(which codium)" ]; then
-	echo -e "${PROGRAM_NAME}: codium executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
+	echo "${PROGRAM_NAME}: codium executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
 	exit 0
 fi
 

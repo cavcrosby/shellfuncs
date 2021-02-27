@@ -3,14 +3,12 @@
 # shellcheck disable=1091,2005
 
 . "./.env"
-PROGRAM_NAME=$(basename "$0")
-SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
 
 GLOBBING_PATTERN='/dev/vmnet*'
 
 set -- "$GLOBBING_PATTERN"
 if [ "$1" = "$GLOBBING_PATTERN" ]; then
-	echo -e "${PROGRAM_NAME}: vmnet devices do not exist. $SKIPPING_TEST_MESSAGE"
+	echo "${PROGRAM_NAME}: vmnet devices do not exist. $SKIPPING_TEST_MESSAGE"
 	exit 0
 fi
 

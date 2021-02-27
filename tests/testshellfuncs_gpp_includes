@@ -3,8 +3,6 @@
 # shellcheck disable=1091,2005
 
 . "./.env"
-PROGRAM_NAME=$(basename "$0")
-SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
 
 suite () {
 	# suite_addTest has to be used, else shunit2 will not
