@@ -24,7 +24,7 @@ testshellfunc_exec () {
 	"$@" > /dev/null 2>&1
 	EXIT_STATUS="$?"
 	# unsets program with args set above 
-	while [ "$#" -gt 0 ]; do shift; done
+	set --
 	assertEquals "$SHELLFUNC_NAME returned a non-zero status code" 0 "$EXIT_STATUS"
 	return 0
 }
