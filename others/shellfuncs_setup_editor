@@ -5,12 +5,37 @@
 # Usage: Can be ran standalone, but shellfuncs_setup_editor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
+SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME="shellfuncs_setup_editor"
+
+#######################################
+# Usage string for shellfuncs_setup_editor.
+# Globals:
+#   SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME
+# Outputs:
+#   - usage heredoc string to stdout
+# Returns:
+#   0 - cat success
+#   1 - cat error
+#######################################
+_shellfuncs_setup_editor_usage () {
+	cat << _EOF_
+Usage: $SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME [-h] [-a ANSWERS]
+
+Options:
+    -a  specify answers to read builtin in the program (in order that they ask)
+        (format should be as a csv, e.g. 'y,n,n')
+
+_EOF_
+	return
+}
+
 #######################################
 # Installs editor of choice. This may include
 # a prompt in the future to select a editor to install.
 # Globals:
 #   SUCCESS
 #   ERROR
+#   SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME
 # Outputs:
 #   - Editor function output to stdout
 #   - Additional success/error messages to stdout
@@ -19,8 +44,29 @@
 #   1 - general error
 #######################################
 shellfuncs_setup_editor () {
+    # NOTE: opt/OPTIND are unset incase it has been defined previously;
+    # getops will place the next option (e.g. o, t) into name;
+    # TODO(conner@conneracrosby.tech): getopts returns : or ? for a required argument to an option...huh?
+    unset opt
+    unset OPTIND
+    while getopts "ha:" opt; do
+        case "$opt" in
+        "a")    ANSWERS="$(echo "$OPTARG" | tr ',' ' ')"
+                ;;
+        "h")	_shellfuncs_setup_editor_usage
+                return 0
+                ;;
+        ":")    echo "${SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME}: an argument is required for -- $OPTARG"
+                return 1
+                ;;
+        *)		return 1
+                ;;
+        esac
+    done
     EDITOR="vscodium"
-    if ! _shellfuncs_setup_vscodium; then
+    # shellcheck disable=2086
+    # we want globbing for $ANSWERS, will bind to positional parameters
+    if ! _shellfuncs_setup_vscodium $ANSWERS; then
         echo -e "$ERROR failed to install $EDITOR!"
         return 1
     fi
@@ -71,10 +117,13 @@ _shellfuncs_setup_vscodium () {
         return 1
     fi
     echo -e "$SUCCESS installed all required system packages and package '$PACKAGE_NAME'"
-    # generating gpg keys is based on this article:
+    # were any answers passed into this shellfunc?
+    if [ -z "$*" ]; then
+        # generating gpg keys is based on this article:
     # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
-    read -r -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
-    if [ "${GEN_KEY_REPLY,,}" == "y" ]; then
+        read -r -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
+    fi
+    if [ "${GEN_KEY_REPLY,,}" = "y" ] || [ "$1" = "y" ]; then
         set -e
         gpg --full-generate-key
         # second pipe will have input that looks like this:
