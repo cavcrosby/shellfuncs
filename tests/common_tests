@@ -15,13 +15,23 @@ testshellfunc_loaded () {
 	return 0
 }
 
-testshellfunc_exec () {
+testshellfunc_noninteractive_exec () {
 	# shellcheck disable=2086
-	# NOTE: This test should be only used if the shell function 
-	# is noninteractive
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$SHELLFUNC_NAME" $ARGS
 	"$@" > /dev/null 2>&1
+	EXIT_STATUS="$?"
+	# unsets program with args set above 
+	set --
+	assertEquals "$SHELLFUNC_NAME returned a non-zero status code" 0 "$EXIT_STATUS"
+	return 0
+}
+
+testshellfunc_interactive_exec () {
+	# shellcheck disable=2086
+	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
+	set -- "$SHELLFUNC_NAME" $ARGS
+	echo "$STDIN_TO_PROGRAM" | "$@" > /dev/null 2>&1
 	EXIT_STATUS="$?"
 	# unsets program with args set above 
 	set --

@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,1090,2086
+
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+suite () {
+	# suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	suite_addTest testshellfunc_loaded
+	suite_addTest test_exit
+	suite_addTest test_exit_invalid_selection
+	# TODO(conner@conneracrosby.tech): maybe find a way to add the choices as a test here?
+	# Just to make sure really that from the menu script(s) can be invoked correctly.
+}
+
+test_exit () {
+	SELECTION_NUMBER=0
+	export ARGS=""
+	export STDIN_TO_PROGRAM="${SELECTION_NUMBER}\n"
+	testshellfunc_interactive_exec
+	return 0
+}
+
+test_exit_invalid_selection () {
+	# seriously doubt there will be this many selections
+	SELECTION_NUMBER=999
+	export ARGS=""
+	export STDIN_TO_PROGRAM="${SELECTION_NUMBER}\n"
+	testshellfunc_interactive_exec
+	return 0
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2 (https://github.com/kward/shunit2.git)
+. "./shunit2"

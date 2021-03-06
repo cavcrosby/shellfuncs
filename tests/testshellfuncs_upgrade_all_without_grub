@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,1090
+
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+if [ -z "$(which apt-get)" ]; then
+	echo "${PROGRAM_NAME}: apt-get executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
+	exit 0
+fi
+
+suite () {
+	# suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	suite_addTest testshellfunc_loaded
+	suite_addTest testshellfunc_noninteractive_exec
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2 (https://github.com/kward/shunit2.git)
+. "./shunit2"

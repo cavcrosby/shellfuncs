@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,2005,1090,2086
+
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+# check to see if I am root
+ROOT_ID=0
+if [ "$(id --user)" != "$ROOT_ID" ]; then
+    echo "${PROGRAM_NAME}: must be root to run script!"
+    exit $MUST_BE_ROOT_STATUS_CODE
+fi
+
+suite () {
+	# suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	suite_addTest testshellfunc_loaded
+	export ARGS=""
+	export STDIN_TO_PROGRAM="2\ny\n"
+	suite_addTest testshellfunc_interactive_exec
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2 (https://github.com/kward/shunit2.git)
+. "./shunit2"
