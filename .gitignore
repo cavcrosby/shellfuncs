@@ -1,0 +1,3 @@
+# tests specfic
+/tests/.test_env_local
+/tests/.test_env_secrets

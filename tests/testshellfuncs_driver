@@ -12,24 +12,24 @@ run_testshellfunc_program() {
 	# there shouldn't be a default case (like '*)'), as PREVIOUS_STATUS_CODE
 	# should either be empty or contain some positive int
 	# NOTE: this is just to try and rerun scripts if the change is subtle
-	# TODO(conner@conneracrosby.tech): work on getting sudo the user password (e.g. stdin and through what medium? File, hard-coded? Etc....)
 	case "$PREVIOUS_STATUS_CODE" in
-	"$MUST_BE_ROOT_STATUS_CODE")		sudo ./"$FILENAME" || EXIT_STATUS="$?"
+	"$MUST_BE_ROOT_STATUS_CODE")		echo "$SUDO_PASSWORD" | sudo --stdin SHELLFUNCS_TEST_SCRIPTS_ENV_PATH="$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH" "${PWD}/$FILENAME"; EXIT_STATUS="$?"
 										;;
-	"")									./"$FILENAME" || EXIT_STATUS="$?"
+	"")									./"$FILENAME"; EXIT_STATUS="$?"
 										;;
 	esac
 	
 	if [ "$EXIT_STATUS" = "$PREVIOUS_STATUS_CODE" ]; then
 		echo "${PROGRAM_NAME}: tried to re-run script in a known way, but got same error"
 		echo "${PROGRAM_NAME}: either issue not fixed or shellfunc actually returned such status code?"
-		return "$EXIT_STATUS"
+		return $EXIT_STATUS
 	fi
 
 	case "$EXIT_STATUS" in
-	"$MUST_BE_ROOT_STATUS_CODE")		run_testshellfunc_program "$FILENAME" "$MUST_BE_ROOT_STATUS_CODE"
+	"$MUST_BE_ROOT_STATUS_CODE")		echo "${FILENAME}: $TRYING_TEST_AGAIN_MESSAGE"
+										run_testshellfunc_program "$FILENAME" "$MUST_BE_ROOT_STATUS_CODE"
 										;;
-	*)									return "$EXIT_STATUS"
+	*)									return $EXIT_STATUS
 										;;
 	esac
 }
@@ -40,18 +40,20 @@ run_testshellfunc_program() {
 #######################################
 # NOTE: set -e might not be needed as the driver probably
 # should report status codes of each testshellfunc_program
+# (or at least be ok with run_testshellfunc_program returning non-zero status codes) 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
 for f in ./*
 do
 	# removing the $PWD notation './' from the file name
 	f="${f:2:${#f}}"
-    case "${f:2:${#f}}" in
+    case "$f" in
 		"$(basename "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH")")		;;
 		"common_tests")											;;
 		"shunit2")												;;
-		"$0")													;;
-		*)														run_testshellfunc_program "$f"
+		"$(basename "$0")")										;;
+		*)														echo "${f}: running test(s)"
+																run_testshellfunc_program "$f"
 																;;
 	esac
 done

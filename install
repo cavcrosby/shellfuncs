@@ -13,7 +13,9 @@ LOCAL_REPO_NAME="shellfuncs"
 SCRIPTS_DIR_NAME="scripts"
 OTHER_SCRIPTS_DIR_NAME="others"
 TEST_SCRIPTS_DIR_NAME="tests"
-TEST_SCRIPTS_ENV_FILENAME=".env"
+TEST_SCRIPTS_ENV_FILENAME=".test_env"
+TEST_SCRIPTS_ENV_LOCAL_FILENAME=".test_env_local"
+TEST_SCRIPTS_ENV_SECRETS=".test_env_secrets"
 # where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
 
@@ -35,6 +37,8 @@ SCRIPTS_PATH="${LOCAL_REPO_PATH}/${SCRIPTS_DIR_NAME}"
 OTHER_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${OTHER_SCRIPTS_DIR_NAME}"
 TEST_SCRIPTS_PATH="${LOCAL_REPO_PATH}/${TEST_SCRIPTS_DIR_NAME}"
 TEST_ENV_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_FILENAME}"
+TEST_ENV_LOCAL_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_LOCAL_FILENAME}"
+TEST_SCRIPTS_ENV_SECRETS_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_SECRETS}"
 SHELL_DOTFILE_PATH="${HOME}/${SHELL_DOTFILE_NAME}"
 
 # shellcheck disable=2034
@@ -133,6 +137,11 @@ _EOF_
 # setups test env dotfile to allow the shell to pull in additional shell scripts from 'others' 
 # and insert a env var that points to the original shell dotfile used during the install
 {
+    echo "#"
+    echo "#"
+    echo "# load_other_shellfuncs is added to pull other scripts"
+    echo "# for testing, also contains local system config(s)."
+    echo ""
 	echo "SHELL_DOTFILE_PATH=$SHELL_DOTFILE_PATH"
     # shellcheck disable=2016
 	echo '. "$SHELL_DOTFILE_PATH" > /dev/null 2>&1'
@@ -175,7 +184,15 @@ load_other_shellfuncs () {
 
 load_other_shellfuncs
 _EOF_
-} >> "$TEST_ENV_PATH"
+} >> "$TEST_ENV_LOCAL_PATH"
+
+{
+    echo "#"
+    echo "#"
+    echo "# Secrets used for testing"
+    echo ""
+	echo "SUDO_PASSWORD="
+} >> "$TEST_SCRIPTS_ENV_SECRETS_PATH"
 
 clear
 echo -e "$SUCCESS installation was successfull! Restart your shell session to pull in/update scripts"
