@@ -28,5 +28,5 @@ suite () {
 # NOTE: . does not check PWD for script by default
 . "./common_tests"
 
-# load shUnit2.
+# load shUnit2 (https://github.com/kward/shunit2.git)
 . "./shunit2"

@@ -89,6 +89,7 @@ shellfuncs_install_tortoisehg () {
     fi
     # out of TEMP_DIR_NAME
     cd ..
+    # TODO(conner@conneracrosby.tech): this is just temporary, was this mean't for the building of hg?
     export PATH="${PWD}/${TEMP_DIR_NAME}:${PATH}"
 
     if ! make local; then

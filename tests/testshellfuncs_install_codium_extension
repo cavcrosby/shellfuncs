@@ -18,12 +18,13 @@ suite () {
 	EXTENSION='timonwong.shellcheck'
 	EXTENSION_VERSION='0.13.2'
 	export ARGS="$EXTENSION $EXTENSION_VERSION"
+	suite_addTest testshellfunc_loaded
 	suite_addTest testshellfunc_exec
 }
 
 # NOTE: . does not check PWD for script by default
 . "./common_tests"
 
-# load shUnit2.
+# load shUnit2 (https://github.com/kward/shunit2.git)
 . "./shunit2"
 
