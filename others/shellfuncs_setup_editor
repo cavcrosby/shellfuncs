@@ -5,8 +5,7 @@
 # Usage: Can be ran standalone, but shellfuncs_setup_editor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
-# This is determined in the main shellfunc function
-SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME=""
+SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME="shellfuncs_setup_editor"
 
 #######################################
 # Usage string for shellfuncs_setup_editor.
@@ -36,6 +35,7 @@ _EOF_
 # Globals:
 #   SUCCESS
 #   ERROR
+#   SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME
 # Outputs:
 #   - Editor function output to stdout
 #   - Additional success/error messages to stdout
@@ -44,14 +44,14 @@ _EOF_
 #   1 - general error
 #######################################
 shellfuncs_setup_editor () {
-    SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME="${FUNCNAME[0]}"
     # NOTE: opt/OPTIND are unset incase it has been defined previously;
     # getops will place the next option (e.g. o, t) into name;
+    # TODO(conner@conneracrosby.tech): getopts returns : or ? for a required argument to an option...huh?
     unset opt
     unset OPTIND
     while getopts "ha:" opt; do
         case "$opt" in
-        "a")    ANSWERS="$(tr ',' ' ' "$OPTARG")"
+        "a")    ANSWERS="$(echo "$OPTARG" | tr ',' ' ')"
                 ;;
         "h")	_shellfuncs_setup_editor_usage
                 return 0
@@ -59,7 +59,8 @@ shellfuncs_setup_editor () {
         ":")    echo "${SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME}: an argument is required for -- $OPTARG"
                 return 1
                 ;;
-        *)		;;
+        *)		return 1
+                ;;
         esac
     done
     EDITOR="vscodium"
