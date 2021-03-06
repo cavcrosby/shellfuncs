@@ -13,7 +13,8 @@ run_testshellfunc_program() {
 	# should either be empty or contain some positive int
 	# NOTE: this is just to try and rerun scripts if the change is subtle
 	case "$PREVIOUS_STATUS_CODE" in
-	"$MUST_BE_ROOT_STATUS_CODE")		echo "$SUDO_PASSWORD" | sudo --stdin SHELLFUNCS_TEST_SCRIPTS_ENV_PATH="$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH" "${PWD}/$FILENAME"; EXIT_STATUS="$?"
+	"$MUST_BE_ROOT_STATUS_CODE")		if [ -z "$SUDO_PASSWORD" ]; then echo "${FILENAME}: SUDO_PASSWORD not set! $SKIPPING_TEST_MESSAGE"; return 0; fi
+										echo "$SUDO_PASSWORD" | sudo --stdin SHELLFUNCS_TEST_SCRIPTS_ENV_PATH="$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH" "${PWD}/$FILENAME"; EXIT_STATUS="$?"
 										;;
 	"")									./"$FILENAME"; EXIT_STATUS="$?"
 										;;

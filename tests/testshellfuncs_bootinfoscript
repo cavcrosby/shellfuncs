@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+# TODO(conner@conneracrosby.tech): should all instances be disabled in each case (e.g. $MUST_BE_ROOT_STATUS_CODE will always be a number, so no need for 2086)? There might be actual cases missed because of disabling the instance outright.
 # shellcheck disable=1091,2005,1090,2086
 # Usage (or at least an idea on how to use): 
 
