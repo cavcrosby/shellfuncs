@@ -82,9 +82,9 @@ run_testshellfunc_program() {
 # (or at least be ok with run_testshellfunc_program returning non-zero status codes) 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-# NOTE: name is unset incase it has been defined previously;
+# NOTE: opt is unset incase it has been defined previously;
 # getops will place the next option (e.g. o, t) into name;
-unset name
+unset opt
 while getopts "ht:" opt; do
 	case "$opt" in
 	"t")    TESTSHELLFUNCS_PROGRAMS=$OPTARG
