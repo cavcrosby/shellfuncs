@@ -15,8 +15,7 @@ suite () {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest testshellfunc_loaded
-	export ARGS=""
-	export STDIN_TO_PROGRAM="2\ny\n"
+	export ARGS="-a 2,y"
 	suite_addTest testshellfunc_interactive_exec
 }
 

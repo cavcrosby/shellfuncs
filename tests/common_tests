@@ -31,7 +31,7 @@ testshellfunc_interactive_exec () {
 	# shellcheck disable=2086
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$SHELLFUNC_NAME" $ARGS
-	echo "$STDIN_TO_PROGRAM" | "$@" > /dev/null 2>&1
+	"$@" > /dev/null 2>&1
 	EXIT_STATUS="$?"
 	# unsets program with args set above 
 	set --

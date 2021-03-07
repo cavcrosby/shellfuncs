@@ -15,10 +15,9 @@ suite () {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest testshellfunc_loaded
-	export ARGS=""
 	# NOTE: smtp client allows a user to edit the dotfile 
 	# through an editor of choice, for now I will just skip this.
-	export STDIN_TO_PROGRAM="n\n"
+	export ARGS="-a n"
 	suite_addTest testshellfunc_interactive_exec
 }
 
