@@ -5,12 +5,37 @@
 # Usage: Can be ran standalone, but shellfuncs_setup_smtp_client is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
+SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME="shellfuncs_setup_smtp_client"
+
+#######################################
+# Usage string for shellfuncs_setup_smtp_client.
+# Globals:
+#   SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME
+# Outputs:
+#   - usage heredoc string to stdout
+# Returns:
+#   0 - cat success
+#   1 - cat error
+#######################################
+_shellfuncs_setup_smtp_client_usage () {
+	cat << _EOF_
+Usage: $SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME [-h] [-a ANSWERS]
+
+Options:
+    -a  specify answers to read builtin in the program (in order that they ask)
+        (format should be as a csv, e.g. 'y,n,n')
+
+_EOF_
+	return
+}
+
 #######################################
 # Installs smtp client of choice. This may include
 # a prompt in the future to select a smtp client to install.
 # Globals:
 #   SUCCESS
 #   ERROR
+#   SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME
 # Outputs:
 #   - Smtp function output to stdout
 #   - Additional success/error messages to stdout
@@ -19,8 +44,28 @@
 #   1 - general error
 #######################################
 shellfuncs_setup_smtp_client () {
+    # NOTE: opt/OPTIND are unset incase it has been defined previously;
+    # getops will place the next option (e.g. o, t) into name;
+    unset opt
+    unset OPTIND
+    while getopts "ha:" opt; do
+        case "$opt" in
+        "a")    ANSWERS="$(echo "$OPTARG" | tr ',' ' ')"
+                ;;
+        "h")	_shellfuncs_setup_smtp_client_usage
+                return 0
+                ;;
+        ":")    echo "${SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME}: an argument is required for -- $OPTARG"
+                return 1
+                ;;
+        *)		return 1
+                ;;
+        esac
+    done
     SMTP_CLIENT="msmtp"
-    if ! _shellfuncs_setup_msmtp; then
+    # shellcheck disable=2086
+    # we want globbing for $ANSWERS, will bind to positional parameters
+    if ! _shellfuncs_setup_msmtp $ANSWERS; then
         echo -e "$ERROR failed to install $SMTP_CLIENT!"
         return 1
     fi
@@ -36,6 +81,9 @@ shellfuncs_setup_smtp_client () {
 #   ERROR
 #   SUCCESS
 #   EDITOR
+# Arguments:
+#   $1: 'y' or 'n', if wanting to generate default msmtp-user dotfile
+#   and to edit it
 # Outputs:
 #   - Success/error messages to stdout
 # Returns:
@@ -61,8 +109,10 @@ _shellfuncs_setup_msmtp () {
         return 1
     fi
     echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
-    read -r -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
-    if [ "${MSMTP_DOTFILE_REPLY,,}" == "y" ]; then
+    if [ -z "$*" ]; then
+        read -r -p "Do you want a default msmtp-user dotfile created, and to edit it, y/n? (n) " MSMTP_DOTFILE_REPLY
+    fi
+    if [ "${MSMTP_DOTFILE_REPLY,,}" == "y" ] || [ "$1" = "y" ]; then
         cp "$EXAMPLE_MSMTP_USER_CONFIGURATION_PATH" "${HOME}/${MSMTP_DOTFILE_NAME}" || return 1
         if [ -z "$EDITOR" ]; then
             read -r -p "Enter name/path of a editor to use (can also supply args as to a command) ==> " EDITOR

@@ -5,12 +5,37 @@
 # Usage: Can be ran standalone, but shellfuncs_setup_hypervisor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
+SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME="shellfuncs_setup_hypervisor"
+
+#######################################
+# Usage string for shellfuncs_setup_hypervisor.
+# Globals:
+#   SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME
+# Outputs:
+#   - usage heredoc string to stdout
+# Returns:
+#   0 - cat success
+#   1 - cat error
+#######################################
+_shellfuncs_setup_hypervisor_usage () {
+	cat << _EOF_
+Usage: $SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME [-h] [-a ANSWERS]
+
+Options:
+    -a  specify answers to read builtin in the program (in order that they ask)
+        (format should be as a csv, e.g. 'y,n,n')
+
+_EOF_
+	return
+}
+
 #######################################
 # Installs hypervisor of choice. This may include
 # a prompt in the future to select a hypervisor to install.
 # Globals:
 #   SUCCESS
 #   ERROR
+#   SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME
 # Outputs:
 #   - Hypervisor function output to stdout
 #   - Additional success/error messages to stdout
@@ -19,8 +44,28 @@
 #   1 - general error
 #######################################
 shellfuncs_setup_hypervisor () {
+    # NOTE: opt/OPTIND are unset incase it has been defined previously;
+    # getops will place the next option (e.g. o, t) into name;
+    unset opt
+    unset OPTIND
+    while getopts "ha:" opt; do
+        case "$opt" in
+        "a")    ANSWERS="$(echo "$OPTARG" | tr ',' ' ')"
+                ;;
+        "h")	_shellfuncs_setup_hypervisor_usage
+                return 0
+                ;;
+        ":")    echo "${SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME}: an argument is required for -- $OPTARG"
+                return 1
+                ;;
+        *)		return 1
+                ;;
+        esac
+    done
     HYPERVISOR="virtualbox"
-    _shellfuncs_setup_virtualbox || EXIT_STATUS="$?"
+    # shellcheck disable=2086
+    # we want globbing for $ANSWERS, will bind to positional parameters
+    _shellfuncs_setup_virtualbox $ANSWERS || EXIT_STATUS="$?"
     if [ "$EXIT_STATUS" -eq 2 ]; then
         return 0
     elif [ "$EXIT_STATUS" -ne 0 ]; then
@@ -39,6 +84,9 @@ shellfuncs_setup_hypervisor () {
 # Globals:
 #   ERROR
 #   SUCCESS
+# Arguments:
+#   $1: positive int for distro selection
+#   $2: 'y' or 'n', if wanting to install virtualbox's extension pack
 # Outputs:
 #   - Success/error messages to stdout
 # Returns:
@@ -67,7 +115,11 @@ Debian distributions:
 0. Quit (default)
 
 _EOF_
-        read -r -p "Select the system distribution used [0-3]: " SELECTION_REPLY
+        if [ -z "$*" ]; then
+            read -r -p "Select the system distribution used [0-3]: " SELECTION_REPLY
+        else
+            SELECTION_REPLY="$1"
+        fi
         case "$SELECTION_REPLY" in
         1)  DEBIAN_DISTRO="focal"
             ;;
@@ -90,9 +142,11 @@ _EOF_
         return 1
     fi
     echo -e "$SUCCESS installed package '$PACKAGE_NAME'"
-    # no need to eject/return at this point, just signal to the user an issue if an error occurs
-    read -r -p "Do you want to install the extension pack for virtualbox, y/n? (n) " GET_EXT_PACK_REPLY
-    if [ "${GET_EXT_PACK_REPLY,,}" == "y" ]; then
+    if [ -z "$*" ]; then
+        # no need to eject/return at this point, just signal to the user an issue if an error occurs
+        read -r -p "Do you want to install the extension pack for virtualbox, y/n? (n) " GET_EXT_PACK_REPLY
+    fi
+    if [ "${GET_EXT_PACK_REPLY,,}" == "y" ] || [ "$2" == "y" ]; then
         if wget --quiet --output-document="$EXT_PACK_NAME" "$EXT_PACK_URL"; then
             if ! sudo vboxmanage extpack install "$EXT_PACK_NAME"; then
                 echo -e "$ERROR failed to install extension pack for virtualbox!"

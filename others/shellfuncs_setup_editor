@@ -83,6 +83,8 @@ shellfuncs_setup_editor () {
 # Globals:
 #   ERROR
 #   SUCCESS
+# Arguments:
+#   $1: 'y' or 'n', if wanting to generate gpg key and use it
 # Outputs:
 #   - Success/error messages to stdout
 #   - 'dd' output to stdout
@@ -120,7 +122,7 @@ _shellfuncs_setup_vscodium () {
     # were any answers passed into this shellfunc?
     if [ -z "$*" ]; then
         # generating gpg keys is based on this article:
-    # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
+        # https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-gpg-key
         read -r -p "Do you want to generate a new key, have codium use it, and attach it to git, y/n? (n) " GEN_KEY_REPLY
     fi
     if [ "${GEN_KEY_REPLY,,}" = "y" ] || [ "$1" = "y" ]; then
