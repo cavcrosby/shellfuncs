@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# Part of 'shellfuncs' git repo
+
+#######################################
+# Nukes a git repo on the filesystem and
+# then grabs another copy from its 'origin'
+# location.
+# Globals:
+#   ERROR
+# Arguments:
+#   $1: git repo directory name (assumes it is in the PWD)
+# Returns:
+#   0 - general success
+#   1 - general error
+#######################################
+shellfuncs_git_reclone () {
+    GIT_REPO_DIR="./${1}"
+    # TODO(conner@conneracrosby.tech): am I ok with these utilities printing out to stdout/stderr and not using a custom message?
+    cd "$GIT_REPO_DIR" || return 1
+    if ! git rev-parse --quiet --is-inside-work-tree > /dev/null 2>&1; then
+        echo -e "$ERROR $GIT_REPO_DIR is not a git repo!"
+        cd ..
+        return 1
+    fi
+    GIT_REPO_URL="$(git config --local remote.origin.url)"
+    cd .. || return 1
+    rm --recursive --force "$GIT_REPO_DIR"
+    git clone --quiet "$GIT_REPO_URL" "$(basename "$GIT_REPO_DIR")"
+    return 0
+}
