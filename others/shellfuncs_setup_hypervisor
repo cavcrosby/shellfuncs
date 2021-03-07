@@ -148,8 +148,11 @@ _EOF_
     fi
     if [ "${GET_EXT_PACK_REPLY,,}" == "y" ] || [ "$2" == "y" ]; then
         if wget --quiet --output-document="$EXT_PACK_NAME" "$EXT_PACK_URL"; then
-            if ! sudo vboxmanage extpack install "$EXT_PACK_NAME"; then
-                echo -e "$ERROR failed to install extension pack for virtualbox!"
+            # license can be retrieved after doing manual install of the extension pack 
+            if ! sudo vboxmanage extpack install \
+                --accept-license=33d7284dc4a0ece381196fda3cfe2ed0e1e8e7ed7f27b9a9ebc4ee22e24bd23c \
+                "$EXT_PACK_NAME"; then
+                    echo -e "$ERROR failed to install extension pack for virtualbox!"
             else
                 echo -e "$SUCCESS the extension pack for virtualbox was installed"
             fi
