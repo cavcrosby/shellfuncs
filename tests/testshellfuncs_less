@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# shellcheck disable=1091,2005,1090
+
+. "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
+
+suite () {
+	# suite_addTest has to be used, else shunit2 will not
+	# execute any other shell functions in the env (this applies to common_tests)
+	suite_addTest testshellfunc_loaded
+	suite_addTest testshellfuncs_less
+}
+
+testshellfuncs_less () {
+	# NOTE: I have no doubt that less will work, more so just 
+	# concerned that this env var is correct when the shellfunc
+	# uses it
+	if [ -d "$SHELLFUNCS_SCRIPTS_PATH" ]; then
+		return 0
+	fi
+	return 1
+}
+
+# NOTE: . does not check PWD for script by default
+. "./common_tests"
+
+# load shUnit2 (https://github.com/kward/shunit2.git)
+. "./shunit2"

@@ -4,20 +4,30 @@
 
 #######################################
 # A 'less' wrapper but for shullfuncs 
-# scripts. Perhaps in the future, arguments past 1
-# could be passed in as additional options to less (e.g. --foo, -b).
+# scripts.
 # Globals:
 #   SHELLFUNCS_SCRIPTS_PATH
 # Arguments:
 #   $1: the shellfuncs script name to pass as 
 #       an argument to less
+#   $n: any options you would usually pass to less
 # Returns:
 #   0 - general success
 #   1 - general error
 #######################################
 shellfuncs_less () {
     # shellcheck disable=SC1091
-    less "${SHELLFUNCS_SCRIPTS_PATH}/${1}" || return 1
+    OPTIONS=
+    while [ $((${#}-1)) != 0 ]; do
+        OPTIONS="${OPTIONS} ${1}"
+        shift
+    done
+    FILENAME_PATH="${SHELLFUNCS_SCRIPTS_PATH}/${1}"
+    # shellcheck disable=2086
+    # NOTE: We want word splitting for $OPTIONS, otherwise all args are one string!
+    set -- "$(which less)" $OPTIONS "$FILENAME_PATH"
+    # last positional argument should be filename
+    "$@" || return 1
     return 0
 }
 
