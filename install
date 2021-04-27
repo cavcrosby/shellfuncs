@@ -16,16 +16,26 @@ TEST_SCRIPTS_DIR_NAME="tests"
 TEST_SCRIPTS_ENV_FILENAME=".test_env"
 TEST_SCRIPTS_ENV_LOCAL_FILENAME=".test_env_local"
 TEST_SCRIPTS_ENV_SECRETS=".test_env_secrets"
+YES="y"
+NO="n"
 # where this repo is located remotely (doesn't have to be github per say)
 REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
+# NOTES: SHELLFUNCS_AUTOMATED_INSTALL && SHELLFUNCS_REINSTALL go together.
+# Should either be empty (implied n) or take "y" ==> yes. Needs to be
+# commented out, otherwise will override any global env var version(s).
+# SHELLFUNCS_AUTOMATED_INSTALL=
+# SHELLFUNCS_REINSTALL=
 
 if [ -z "$(which git)" ]; then
 	echo "${PROGRAM_NAME}: git cannot be found on the PATH!"
 	exit 1
 fi
 
-if [ -z "$GIT_REPOS_PATH" ]; then
+if [ -z "$GIT_REPOS_PATH" ] && [ "$SHELLFUNCS_AUTOMATED_INSTALL" != "$YES" ]; then
 	read -r -e -p "What directory are git repositories stored in? ==> " -i "$HOME" GIT_REPOS_PATH <&1
+elif [ -z "$GIT_REPOS_PATH" ] && [ "$SHELLFUNCS_AUTOMATED_INSTALL" = "$YES" ]; then
+    echo "${PROGRAM_NAME}: trying automated install but GIT_REPOS_PATH is not defined"
+	exit 1
 fi
 
 if [ -z "$SHELL_DOTFILE_NAME" ]; then
@@ -41,20 +51,27 @@ TEST_ENV_LOCAL_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_LOCAL_FILENAME}"
 TEST_SCRIPTS_ENV_SECRETS_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_SECRETS}"
 SHELL_DOTFILE_PATH="${HOME}/${SHELL_DOTFILE_NAME}"
 
-# shellcheck disable=2034
-read -r -p "Is this a reinstall, y/n? (n) " RE_INSTALL_REPLY <&1
+# NOTE: setting just SHELLFUNCS_REINSTALL but not SHELLFUNCS_AUTOMATED_INSTALL (to y) will still 
+# prompt and override the SHELLFUNCS_REINSTALL var
+if [ "$SHELLFUNCS_AUTOMATED_INSTALL" != "$YES" ]; then
+    # shellcheck disable=2034
+    read -r -p "Is this a reinstall, ${YES}/${NO}? (${NO}) " SHELLFUNCS_REINSTALL <&1
+fi
 
 # using parameter expansion, ',,' append will convert the string to lowercase
-if [ "${RE_INSTALL_REPLY,,}" == "y" ]; then
-	if [ -d "$LOCAL_REPO_PATH" ]; then
+if [ "${SHELLFUNCS_REINSTALL,,}" == "$YES" ] && [ -d "$LOCAL_REPO_PATH" ]; then
+	if [ "$SHELLFUNCS_AUTOMATED_INSTALL" != "$YES" ]; then
 		echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${SHELL_DOTFILE_NAME}' may still contain 'install' functions"
-		read -r -p "Proceed with reinstall, y/n? (n) " PROCEED_REINSTALLED_REPLY <&1
-		if [ "${PROCEED_REINSTALLED_REPLY,,}" == "y" ]; then
-			rm --recursive --force "$LOCAL_REPO_PATH"
-		else
-			exit 0
-		fi
+		read -r -p "Proceed with reinstall, ${YES}/${NO}? (${NO}) " PROCEED_REINSTALLED_REPLY <&1
 	fi
+    # automated installs means you should know what you getting yourself into!
+    # NOTES: instead of setting a default reinstall reply to yes, rather have 
+    # default answer as 'no'. Better to opt in than out.
+    if [ "${PROCEED_REINSTALLED_REPLY,,}" == "$YES" ] || [ "$SHELLFUNCS_AUTOMATED_INSTALL" = "$YES" ]; then
+        rm --recursive --force "$LOCAL_REPO_PATH"
+    else
+        exit 0
+    fi
 fi
 
 git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
