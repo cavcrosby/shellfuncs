@@ -91,6 +91,8 @@ shellfuncs_setup_editor () {
 #######################################
 _shellfuncs_setup_vscodium () {
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
+    # var name inspired by apt-add-repository
+    APT_SOURCELINE="deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
     CODIUM_USER_SETTINGS_PATH="${HOME}/.config/VSCodium/User/settings.json"
     CODIUM_USER_SETTINGS_DIR="$(dirname "$CODIUM_USER_SETTINGS_PATH")"
     PACKAGE_NAME="codium"
@@ -106,10 +108,8 @@ _shellfuncs_setup_vscodium () {
             echo -e "$ERROR could not install all required system packages"
             return 1
         fi
-        set -e
-        wget --output-document - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
-        echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list 
-        set +e
+        if ! wget --output-document - "$GPG_URL" | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg; then return 1; fi
+        if ! echo "$APT_SOURCELINE" | sudo tee --append /etc/apt/sources.list.d/vscodium.list; then return 1; fi
         if sudo apt-get update && ! sudo apt-get install "$PACKAGE_NAME" --assume-yes; then
             echo -e "$ERROR could not install editor package '$PACKAGE_NAME'"
             return 1
