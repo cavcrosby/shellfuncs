@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# Small script that sets the stage for
+# building a Docker image with shellfuncs.
+
+#######################################
+# Usage string for the program.
+# Globals:
+#   PROGRAM_NAME
+# Outputs:
+#   - usage heredoc string to stdout
+# Returns:
+#   0 - cat success
+#   1 - cat error
+#######################################
+usage () {
+	cat << _EOF_
+Usage: $PROGRAM_NAME [-c] [-h]
+
+Creates/pulls the needed material to perform a docker build. 
+
+Options:
+	-c	clean PWD of contents created from previous $PROGRAM_NAME call
+	-h	display usage str and exit
+
+_EOF_
+	return
+}
+
+#######################################
+# Clean contents in PWD created from running
+# the rest of this program.
+# Globals:
+#   SHUNIT_REPO_NAME
+#	SHUNIT_PROGRAM_NAME
+# Outputs:
+#   - usage heredoc string to stdout
+# Returns:
+#   0 - clean success
+#   1 - clean error
+#######################################
+clean () {
+	# checks are not needed because of --force option
+	rm --force "${SHELLFUNCS_TEST_SCRIPTS_PATH}/${SHUNIT_PROGRAM_NAME}"
+	return
+}
+
+set -e
+PROGRAM_NAME=$(basename "$0")
+SHUNIT_GIT_REPO_URL="https://github.com/kward/shunit2"
+SHUNIT_REPO_NAME="$(basename "$SHUNIT_GIT_REPO_URL")"
+SHUNIT_PROGRAM_NAME="shunit2"
+
+# NOTE: opt is unset incase it has been defined previously;
+# getops will place the next option (e.g. o, t) into name;
+unset opt
+while getopts "hc" opt; do
+	case "$opt" in
+	# -c is for 'clean'
+	"c")    CLEAN="true"
+			;;
+	"h")	usage
+			exit 0
+			;;
+	":")    echo "${PROGRAM_NAME}: an argument is required for -- $OPTARG"
+			exit 1
+			;;
+    *)		# NOTE: using the program with no arguments will cause '?'
+			# to be inserted into $opt. However, I've found getopts seems to
+			# handle unknown options (at least those not found in the opt str).
+			# 'shellcheck' seems to say otherwise, and that a default case is needed.
+			usage
+			exit 1
+			;;
+    esac
+done
+
+if [ -n "$CLEAN" ]; then
+	clean
+	# return clean exit code
+	exit
+fi
+
+if [ -z "$(which git)" ]; then
+	echo "${PROGRAM_NAME}: git cannot be found on the PATH!"
+	exit 1
+fi
+
+git clone --quiet "$SHUNIT_GIT_REPO_URL" "$SHUNIT_REPO_NAME"
+
+# assumes the 'shunit2' script is located at root
+cp "${SHUNIT_REPO_NAME}/${SHUNIT_PROGRAM_NAME}" "$SHELLFUNCS_TEST_SCRIPTS_PATH"
+rm --recursive --force "$SHUNIT_REPO_NAME"
+
+exit 0

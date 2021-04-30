@@ -82,6 +82,7 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 	echo "SHELLFUNCS_REPO_PATH=$LOCAL_REPO_PATH"
 	echo "SHELLFUNCS_SCRIPTS_PATH=$SCRIPTS_PATH"
 	echo "SHELLFUNCS_OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
+    echo "export SHELLFUNCS_TEST_SCRIPTS_PATH=$TEST_SCRIPTS_PATH"
 	echo "export SHELLFUNCS_TEST_SCRIPTS_ENV_PATH=$TEST_ENV_PATH"
 	if [ -z "$SUCCESS" ] || [ -z "$ERROR" ] || [ -z "$WARNING" ]; then
 		echo "# ANSI escape code sequences for status messages with character coloring"
