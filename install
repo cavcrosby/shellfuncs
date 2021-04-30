@@ -212,7 +212,6 @@ _EOF_
 	echo "SUDO_PASSWORD="
 } >> "$TEST_SCRIPTS_ENV_SECRETS_PATH"
 
-clear
 echo -e "$SUCCESS installation was successfull! Restart your shell session to pull in/update scripts"
 
 exit 0
