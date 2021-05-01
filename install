@@ -51,8 +51,8 @@ TEST_ENV_LOCAL_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_LOCAL_FILENAME}"
 TEST_SCRIPTS_ENV_SECRETS_PATH="${TEST_SCRIPTS_PATH}/${TEST_SCRIPTS_ENV_SECRETS}"
 SHELL_DOTFILE_PATH="${HOME}/${SHELL_DOTFILE_NAME}"
 
-# NOTE: setting just SHELLFUNCS_REINSTALL but not SHELLFUNCS_AUTOMATED_INSTALL (to y) will still 
-# prompt and override the SHELLFUNCS_REINSTALL var
+# NOTE: setting just SHELLFUNCS_REINSTALL but not SHELLFUNCS_AUTOMATED_INSTALL
+# to "y", will still prompt and override the SHELLFUNCS_REINSTALL var
 if [ "$SHELLFUNCS_AUTOMATED_INSTALL" != "$YES" ]; then
     # shellcheck disable=2034
     read -r -p "Is this a reinstall, ${YES}/${NO}? (${NO}) " SHELLFUNCS_REINSTALL <&1
@@ -64,7 +64,6 @@ if [ "${SHELLFUNCS_REINSTALL,,}" == "$YES" ] && [ -d "$LOCAL_REPO_PATH" ]; then
 		echo "${PROGRAM_NAME}: the $LOCAL_REPO_NAME repo still exists on the local file system, '${SHELL_DOTFILE_NAME}' may still contain 'install' functions"
 		read -r -p "Proceed with reinstall, ${YES}/${NO}? (${NO}) " PROCEED_REINSTALLED_REPLY <&1
 	fi
-    # automated installs means you should know what you getting yourself into!
     # NOTES: instead of setting a default reinstall reply to yes, rather have 
     # default answer as 'no'. Better to opt in than out.
     if [ "${PROCEED_REINSTALLED_REPLY,,}" == "$YES" ] || [ "$SHELLFUNCS_AUTOMATED_INSTALL" = "$YES" ]; then
@@ -75,7 +74,8 @@ if [ "${SHELLFUNCS_REINSTALL,,}" == "$YES" ] && [ -d "$LOCAL_REPO_PATH" ]; then
 fi
 
 git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
-# setups dotfile to allow the shell to pull in shell scripts and to update the local repo
+# NOTE: setups dotfile to allow the shell to update the local repo
+# and to pull in shell scripts and 
 {
 	echo ""
 	echo "# Part of $LOCAL_REPO_NAME git repo"
@@ -152,8 +152,9 @@ _EOF_
 
 } >> "$SHELL_DOTFILE_PATH"
 
-# setups test env dotfile to allow the shell to pull in additional shell scripts from 'others' 
-# and insert a env var that points to the original shell dotfile used during the install
+# NOTES: setups (local) test env dotfile to allow the shell to pull in additional
+# shell scripts from 'others'. Also inserts a env var that points to the
+# original shell dotfile used during the install.
 {
     echo "#"
     echo "#"
