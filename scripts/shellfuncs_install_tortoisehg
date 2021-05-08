@@ -23,6 +23,7 @@ shellfuncs_install_tortoisehg() {
     # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
     SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME="${FUNCNAME[0]}"
     DESTINATION_DIR_PATH="${HOME}/tortoisehg"
+    APPLICATION_TRAY_DIR_PATH="${HOME}/.local/share/applications/"
     PYTHON_EXECUTABLE="$(which python3)"
     TEMP_DIR_NAME="${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}_temp"
     TORTOISEHG_REPO_URL="https://foss.heptapod.net/mercurial/tortoisehg/thg"
@@ -98,7 +99,8 @@ shellfuncs_install_tortoisehg() {
     fi
     echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: finally, build from source was successful"
     rm --recursive --force "$TEMP_DIR_NAME"
-    cat << _EOF_ > "$HOME"/.local/share/applications/tortoisehg.desktop
+    if ! [ -d "$APPLICATION_TRAY_DIR_PATH" ]; then mkdir --parents "$APPLICATION_TRAY_DIR_PATH"; fi
+    cat << _EOF_ > "${APPLICATION_TRAY_DIR_PATH}/tortoisehg.desktop"
 [Desktop Entry]
 Name=TortoiseHG
 Exec=$PYTHON_EXECUTABLE $DESTINATION_DIR_PATH/thg
