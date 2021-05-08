@@ -210,7 +210,7 @@ _EOF_
     echo "#"
     echo "# Secrets used for testing"
     echo ""
-	echo "SUDOER_PASSWORD="
+	echo "SUDOER_PASSWORD=\${SUDOER_PASSWORD}"
 } >> "$TEST_SCRIPTS_ENV_SECRETS_PATH"
 
 echo -e "$SUCCESS installation was successfull! Restart your shell session to pull in/update scripts"
