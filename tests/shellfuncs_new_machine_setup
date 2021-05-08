@@ -7,7 +7,7 @@
 suite () {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	suite_addTest testshellfunc_loaded
+	suite_addTest shellfunc_loaded
 	suite_addTest test_exit
 	suite_addTest test_exit_invalid_selection
 	# TODO(conner@conneracrosby.tech): maybe find a way to add the choices as a test here?
@@ -18,7 +18,7 @@ test_exit () {
 	SELECTION_NUMBER=0
 	export ARGS=""
 	export STDIN_TO_PROGRAM="${SELECTION_NUMBER}\n"
-	testshellfunc_interactive_exec
+	shellfunc_interactive_exec
 	return 0
 }
 
@@ -27,7 +27,7 @@ test_exit_invalid_selection () {
 	SELECTION_NUMBER=999
 	export ARGS=""
 	export STDIN_TO_PROGRAM="${SELECTION_NUMBER}\n"
-	testshellfunc_interactive_exec
+	shellfunc_interactive_exec
 	return 0
 }
 

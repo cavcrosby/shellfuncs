@@ -14,9 +14,13 @@
 #######################################
 usage () {
 	cat << _EOF_
-Usage: $PROGRAM_NAME [-h] [-t TESTSHELLFUNCS_FILENAME]
+Usage: $PROGRAM_NAME [-d] [-h] [-t TEST_PROGRAM]
+
+This script handles the running of tests for $PROGRAM_NAME.
 
 Options:
+	-d	allows tests to display all output (debug)
+	-h	display usage str and exit
 	-t	specify a single test program/script to run
 
 _EOF_
@@ -24,14 +28,14 @@ _EOF_
 }
 
 #######################################
-# Used to run testshellfuncs programs. 
-# Allows in defined cases to rerun program(s) 
-# if the re-running requires subtle changes.
+# Used to run tests. Allows in defined 
+# cases to rerun program(s), only if 
+# re-running requires subtle changes.
 # Globals:
-#   SUDO_PASSWORD
+#   SUDOER_PASSWORD
 #   SKIPPING_TEST_MESSAGE
 #   SHELLFUNCS_TEST_SCRIPTS_ENV_PATH
-#	MUST_BE_ROOT_STATUS_CODE
+#	REQUIRES_SUDOER_PASSWORD
 #	TRYING_TEST_AGAIN_MESSAGE
 # Arguments:
 #   $1: program/script name
@@ -41,9 +45,9 @@ _EOF_
 # Returns:
 #   0 - general success
 #   1 - general error
-#	MUST_BE_ROOT_STATUS_CODE
+#	REQUIRES_SUDOER_PASSWORD
 #######################################d
-run_testshellfunc_program() {
+run_test_program() {
 	FILENAME="$1"
 	PREVIOUS_STATUS_CODE="$2"
 
@@ -51,12 +55,13 @@ run_testshellfunc_program() {
 	# should either be empty or contain some positive int
 	# NOTE: this is just to try and rerun scripts if the change is subtle
 	case "$PREVIOUS_STATUS_CODE" in
-	"$MUST_BE_ROOT_STATUS_CODE")		if [ -z "$SUDO_PASSWORD" ]; then echo "${FILENAME}: SUDO_PASSWORD not set! $SKIPPING_TEST_MESSAGE"; return 0; fi
-										echo "$SUDO_PASSWORD" | sudo --stdin SHELLFUNCS_TEST_SCRIPTS_ENV_PATH="$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH" "${PWD}/$FILENAME"; EXIT_STATUS="$?"
+	"$REQUIRES_SUDOER_PASSWORD")		if [ -z "$SUDOER_PASSWORD" ]; then echo "${FILENAME}: SUDOER_PASSWORD not set! $SKIPPING_TEST_MESSAGE"; return 1; fi
+										echo "$SUDOER_PASSWORD" | sudo --validate --stdin; 
 										;;
-	"")									./"$FILENAME"; EXIT_STATUS="$?"
-										;;
+	"")									;;
 	esac
+
+	"${PWD}/$FILENAME"; EXIT_STATUS="$?"
 	
 	if [ "$EXIT_STATUS" = "$PREVIOUS_STATUS_CODE" ]; then
 		echo "${PROGRAM_NAME}: tried to re-run script in a known way, but got same error"
@@ -65,8 +70,8 @@ run_testshellfunc_program() {
 	fi
 
 	case "$EXIT_STATUS" in
-	"$MUST_BE_ROOT_STATUS_CODE")		echo "${FILENAME}: $TRYING_TEST_AGAIN_MESSAGE"
-										run_testshellfunc_program "$FILENAME" "$MUST_BE_ROOT_STATUS_CODE"
+	"$REQUIRES_SUDOER_PASSWORD")		echo "${FILENAME}: $TRYING_TEST_AGAIN_MESSAGE"
+										run_test_program "$FILENAME" "$REQUIRES_SUDOER_PASSWORD"
 										;;
 	*)									return $EXIT_STATUS
 										;;
@@ -77,44 +82,56 @@ run_testshellfunc_program() {
 # Not a function at the moment, but can be considered
 # the main of the program.
 #######################################
-# NOTE: set -e might not be needed as the driver probably
-# should report status codes of each testshellfunc_program
-# (or at least be ok with run_testshellfunc_program returning non-zero status codes) 
+# NOTES: set -e might not be needed as the driver probably
+# should be ok with reporting non-zero status codes of each test ran.
+# loads test env needed to run tests
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
 # NOTE: opt is unset incase it has been defined previously;
 # getops will place the next option (e.g. o, t) into name;
 unset opt
-while getopts "ht:" opt; do
+while getopts "dht:" opt; do
 	case "$opt" in
-	"t")    TESTSHELLFUNCS_PROGRAMS=$OPTARG
+	"d")	DEBUG="true"
 			;;
 	"h")	usage
 			exit 0
 			;;
+	"t")    TEST_PROGRAMS=$OPTARG
+			;;
 	":")    echo "${PROGRAM_NAME}: an argument is required for -- $OPTARG"
 			exit 1
 			;;
-    *)		;;
+    *)		# NOTE: using the program with no arguments will cause '?'
+			# to be inserted into $opt. However, I've found getopts seems to
+			# handle unknown options (at least those not found in the opt str).
+			# 'shellcheck' seems to say otherwise, and that a default case is needed.
+			usage
+			exit 1
+			;;
     esac
 done
 
 # for now the default will be to run all test programs
 # NOTE: globbing pattern should be generalized with exceptions
 # being handled in the below case statement
-if [ -z "$TESTSHELLFUNCS_PROGRAMS" ]; then
-	TESTSHELLFUNCS_PROGRAMS="*"
+if [ -z "$TEST_PROGRAMS" ]; then
+	TEST_PROGRAMS="*"
 fi
 
-for f in $TESTSHELLFUNCS_PROGRAMS
+for f in $TEST_PROGRAMS
 do
     case "$f" in
 		"$(basename "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH")")		;;
+		"$(basename "$0")")										;;
 		"common_tests")											;;
 		"shunit2")												;;
-		"$(basename "$0")")										;;
 		*)														echo "${f}: running test(s)"
-																run_testshellfunc_program "$f"
+																if [ -z "$DEBUG" ]; then
+																	run_test_program "$f" > /dev/null 2>&1
+																else
+																	run_test_program "$f"
+																fi
 																;;
 	esac
 done

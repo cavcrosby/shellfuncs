@@ -3,4 +3,4 @@
 # Status codes use throughout the test suite.
 
 # TODO(conner@conneracrosby.tech): maybe see if these can be used elsewhere? (e.g. shellfuncs themselves!)
-MUST_BE_ROOT_STATUS_CODE=2
+REQUIRES_SUDOER_PASSWORD=2

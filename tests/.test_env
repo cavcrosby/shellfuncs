@@ -3,12 +3,9 @@
 # Main config file used to set environment for the 
 # test programs/scripts in this test suite.
 
-TESTFILE_PREFIX="test"
 SKIPPING_TEST_MESSAGE="Skipping test..."
 TRYING_TEST_AGAIN_MESSAGE="Retrying test as root..."
 PROGRAM_NAME=$(basename "$0")
-# regex strips any str prefix from the program name (e.g. if TESTFILE_PREFIX = test; then testshellfuncs_foo => shellfuncs_foo))
-SHELLFUNC_NAME="$(echo "$PROGRAM_NAME" | grep --only-matching --perl-regexp "(?<=.{${#TESTFILE_PREFIX}})(.+)")"
 
 . "./.test_env_status_codes"
 

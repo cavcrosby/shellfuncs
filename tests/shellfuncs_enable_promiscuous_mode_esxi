@@ -4,11 +4,19 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
+GLOBBING_PATTERN='/dev/vmnet*'
+
+set -- "$GLOBBING_PATTERN"
+if [ "$1" = "$GLOBBING_PATTERN" ]; then
+	echo "${PROGRAM_NAME}: vmnet devices do not exist. $SKIPPING_TEST_MESSAGE"
+	exit 0
+fi
+
 suite () {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	suite_addTest testshellfunc_loaded
-	suite_addTest testshellfunc_noninteractive_exec
+	suite_addTest shellfunc_loaded
+	suite_addTest shellfunc_noninteractive_exec
 }
 
 # NOTE: . does not check PWD for script by default
@@ -16,3 +24,4 @@ suite () {
 
 # load shUnit2 (https://github.com/kward/shunit2.git)
 . "./shunit2"
+

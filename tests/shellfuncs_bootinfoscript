@@ -1,15 +1,14 @@
 #!/bin/bash
 #
-# TODO(conner@conneracrosby.tech): should all instances be disabled in each case (e.g. $MUST_BE_ROOT_STATUS_CODE will always be a number, so no need for 2086)? There might be actual cases missed because of disabling the instance outright.
+# TODO(conner@conneracrosby.tech): should all instances be disabled in each case (e.g. $REQUIRES_SUDOER_PASSWORD will always be a number, so no need for 2086)? There might be actual cases missed because of disabling the instance outright.
 # shellcheck disable=1091,2005,1090,2086
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-# check to see if I am root
-ROOT_ID=0
-if [ "$(id --user)" != "$ROOT_ID" ]; then
-    echo "${PROGRAM_NAME}: must be root to run script!"
-    exit $MUST_BE_ROOT_STATUS_CODE
+# check to see if a password be required to run sudo
+if [ "$(sudo --non-interactive true 2>&1)" != "" ]; then
+    echo "${PROGRAM_NAME}: must have sudoer password to run script!"
+    exit $REQUIRES_SUDOER_PASSWORD
 fi
 
 if [ -z "$(which bootinfoscript)" ]; then
@@ -20,8 +19,8 @@ fi
 suite () {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	suite_addTest testshellfunc_loaded
-	suite_addTest testshellfunc_noninteractive_exec
+	suite_addTest shellfunc_loaded
+	suite_addTest shellfunc_noninteractive_exec
 }
 
 # NOTE: . does not check PWD for script by default

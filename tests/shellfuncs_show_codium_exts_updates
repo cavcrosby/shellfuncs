@@ -10,16 +10,10 @@ if [ -z "$(which codium)" ]; then
 fi
 
 suite () {
-	# NOTE: suite_addTest has to be used, else shunit2 will not
+	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	#
-	# 'shellcheck' extension on marketplace:
-	# https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck
-	EXTENSION='timonwong.shellcheck'
-	EXTENSION_VERSION='0.13.2'
-	export ARGS="$EXTENSION $EXTENSION_VERSION"
-	suite_addTest testshellfunc_loaded
-	suite_addTest testshellfunc_noninteractive_exec
+	suite_addTest shellfunc_loaded
+	suite_addTest shellfunc_noninteractive_exec
 }
 
 # NOTE: . does not check PWD for script by default
@@ -27,4 +21,3 @@ suite () {
 
 # load shUnit2 (https://github.com/kward/shunit2.git)
 . "./shunit2"
-
