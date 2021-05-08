@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:latest
 
 # create user that will run project tests
 ARG USER_NAME="reap2sow1"
@@ -41,10 +41,12 @@ WORKDIR "$WD"
 # NOTE: update image, fetch project dependencies, and create 
 # user/group in which to run tests with
 USER root
-RUN apt-get update && apt-get dist-upgrade --assume-yes
-RUN apt-get install git python3 sudo --assume-yes
-RUN groupadd --gid "$GROUP_ID" "$GROUP_NAME"
-RUN useradd --create-home --home-dir "$USER_HOME" --uid "$USER_ID" --gid "$GROUP_ID" --shell /bin/bash "$USER_NAME"
+RUN apt-get update && apt-get install --assume-yes \
+    git \
+    python3 \
+    sudo
+RUN groupadd --gid "$GROUP_ID" "$GROUP_NAME" \
+    && useradd --create-home --home-dir "$USER_HOME" --uid "$USER_ID" --gid "$GROUP_ID" --shell /bin/bash "$USER_NAME"
 COPY "$INSTALL_PROGRAM_NAME" "$WD"
 
 # NOTE: setups the project repo, and runs tests at container runtime
