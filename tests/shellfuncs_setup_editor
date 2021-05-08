@@ -4,21 +4,20 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-# check to see if I am root
-ROOT_ID=0
-if [ "$(id --user)" != "$ROOT_ID" ]; then
-    echo "${PROGRAM_NAME}: must be root to run script!"
-    exit $MUST_BE_ROOT_STATUS_CODE
+# check to see if a password be required to run sudo
+if [ "$(sudo --non-interactive true 2>&1)" != "" ]; then
+    echo "${PROGRAM_NAME}: must have sudoer password to run script!"
+    exit $REQUIRES_SUDOER_PASSWORD
 fi
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	suite_addTest testshellfunc_loaded
+	suite_addTest shellfunc_loaded
 	# NOTE: setup editor allows a user setup a GPG key to use
 	# with the editor and git. For now I will pass on testing this.
 	export ARGS="-a n"
-	suite_addTest testshellfunc_interactive_exec
+	suite_addTest shellfunc_interactive_exec
 }
 
 # NOTE: . does not check PWD for script by default

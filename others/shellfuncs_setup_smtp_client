@@ -17,7 +17,7 @@ SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME="shellfuncs_setup_smtp_client"
 #   0 - cat success
 #   1 - cat error
 #######################################
-_shellfuncs_setup_smtp_client_usage () {
+_shellfuncs_setup_smtp_client_usage() {
 	cat << _EOF_
 Usage: $SHELLFUNCS_SETUP_SMTP_CLIENT_PROGRAM_NAME [-h] [-a ANSWERS]
 
@@ -43,7 +43,7 @@ _EOF_
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_setup_smtp_client () {
+shellfuncs_setup_smtp_client() {
     # NOTE: opt/OPTIND are unset incase it has been defined previously;
     # getops will place the next option (e.g. o, t) into name;
     unset opt
@@ -90,7 +90,7 @@ shellfuncs_setup_smtp_client () {
 #   0 - general success
 #   1 - general error
 #######################################
-_shellfuncs_setup_msmtp () {
+_shellfuncs_setup_msmtp() {
     # NOTE: msmtp-mta just creates a symlink to msmtp
     # some suggest this makes cron's mailing system 'just work'
     # https://superuser.com/questions/1289550/msmtp-vs-msmtp-mta-package-which-one-to-choose

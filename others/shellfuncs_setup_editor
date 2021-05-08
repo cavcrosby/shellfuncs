@@ -17,7 +17,7 @@ SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME="shellfuncs_setup_editor"
 #   0 - cat success
 #   1 - cat error
 #######################################
-_shellfuncs_setup_editor_usage () {
+_shellfuncs_setup_editor_usage() {
 	cat << _EOF_
 Usage: $SHELLFUNCS_SETUP_EDITOR_PROGRAM_NAME [-h] [-a ANSWERS]
 
@@ -43,7 +43,7 @@ _EOF_
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_setup_editor () {
+shellfuncs_setup_editor() {
     # NOTE: opt/OPTIND are unset incase it has been defined previously;
     # getops will place the next option (e.g. o, t) into name;
     # TODO(conner@conneracrosby.tech): getopts returns : or ? for a required argument to an option...huh?
@@ -89,7 +89,7 @@ shellfuncs_setup_editor () {
 #   - Success/error messages to stdout
 #   - 'dd' output to stdout
 #######################################
-_shellfuncs_setup_vscodium () {
+_shellfuncs_setup_vscodium() {
     GPG_URL="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     # var name inspired by apt-add-repository
     APT_SOURCELINE="deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"

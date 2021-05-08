@@ -9,7 +9,7 @@ if [ -z "$(which codium)" ]; then
 	exit 0
 fi
 
-suite () {
+suite() {
 	# NOTE: suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	#
@@ -18,8 +18,8 @@ suite () {
 	EXTENSION='timonwong.shellcheck'
 	EXTENSION_VERSION='0.13.2'
 	export ARGS="$EXTENSION $EXTENSION_VERSION"
-	suite_addTest testshellfunc_loaded
-	suite_addTest testshellfunc_noninteractive_exec
+	suite_addTest shellfunc_loaded
+	suite_addTest shellfunc_noninteractive_exec
 }
 
 # NOTE: . does not check PWD for script by default

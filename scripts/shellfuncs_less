@@ -15,7 +15,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_less () {
+shellfuncs_less() {
     # shellcheck disable=SC1091
     OPTIONS=
     while [ $((${#}-1)) != 0 ]; do
@@ -42,7 +42,7 @@ shellfuncs_less () {
 #   0 - general success
 #   1 - general error
 #######################################
-_shellfuncs_less_completion () {
+_shellfuncs_less_completion() {
     complete -W "$(ls "${SHELLFUNCS_SCRIPTS_PATH}")" shellfuncs_less || return 1
     return 0
 }

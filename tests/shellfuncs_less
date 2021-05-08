@@ -4,14 +4,14 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
-	suite_addTest testshellfunc_loaded
-	suite_addTest testshellfuncs_less
+	suite_addTest shellfunc_loaded
+	suite_addTest shellfuncs_less
 }
 
-testshellfuncs_less () {
+shellfuncs_less() {
 	# NOTE: I have no doubt that less will work, more so just 
 	# concerned that this env var is correct when the shellfunc
 	# uses it

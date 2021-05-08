@@ -13,7 +13,7 @@
 #   0 - cat success
 #   1 - cat error
 #######################################
-usage () {
+usage() {
 	cat << _EOF_
 Usage: $PROGRAM_NAME [-c] [-h]
 
@@ -39,7 +39,7 @@ _EOF_
 #   0 - clean success
 #   1 - clean error
 #######################################
-clean () {
+clean() {
 	# checks are not needed because of --force option
 	rm --force "${PWD}/${SHUNIT_PROGRAM_NAME}"
 	return

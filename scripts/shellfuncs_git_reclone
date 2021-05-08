@@ -14,7 +14,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_git_reclone () {
+shellfuncs_git_reclone() {
     GIT_REPO_DIR="./${1}"
     # TODO(conner@conneracrosby.tech): am I ok with these utilities printing out to stdout/stderr and not using a custom message?
     cd "$GIT_REPO_DIR" || return 1

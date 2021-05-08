@@ -18,7 +18,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_install_codium_extension () {
+shellfuncs_install_codium_extension() {
     EXTENSION="$1"
     EXTENSION_VERSION="$2"
     if [ -z "$EXTENSION" ]; then

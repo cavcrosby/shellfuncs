@@ -58,4 +58,4 @@ WORKDIR "$REPO_TESTS_DIR_PATH"
 # NOTES: USER_HOME will not be available at container runtime, 
 # so just use HOME. This is because ARG env vars are only available
 # during the building of an image. 
-CMD ["/bin/bash", "-c", ". ${HOME}/${SHELL_DOTFILE_NAME} && ./testshellfuncs_driver"]
+CMD ["/bin/bash", "-c", ". ${HOME}/${SHELL_DOTFILE_NAME} && ./shellfuncs_driver"]

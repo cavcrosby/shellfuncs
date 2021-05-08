@@ -12,7 +12,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_bootinfoscript () {
+shellfuncs_bootinfoscript() {
     cd "$(dirname "$(which bootinfoscript)")" || return 1
     sudo ./bootinfoscript --stdout || return 1
     cd - > /dev/null || return 1
