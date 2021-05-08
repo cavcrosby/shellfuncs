@@ -41,14 +41,15 @@ _EOF_
 #######################################
 clean () {
 	# checks are not needed because of --force option
-	rm --force "${SHELLFUNCS_TEST_SCRIPTS_PATH}/${SHUNIT_PROGRAM_NAME}"
+	rm --force "${PWD}/${SHUNIT_PROGRAM_NAME}"
 	return
 }
 
 set -e
 PROGRAM_NAME=$(basename "$0")
 SHUNIT_GIT_REPO_URL="https://github.com/kward/shunit2"
-SHUNIT_REPO_NAME="$(basename "$SHUNIT_GIT_REPO_URL")"
+# ..._temp needed assuming repo_name = program_name
+SHUNIT_REPO_NAME="$(basename "$SHUNIT_GIT_REPO_URL")_temp"
 SHUNIT_PROGRAM_NAME="shunit2"
 
 # NOTE: opt is unset incase it has been defined previously;
@@ -89,7 +90,7 @@ fi
 git clone --quiet "$SHUNIT_GIT_REPO_URL" "$SHUNIT_REPO_NAME"
 
 # assumes the 'shunit2' script is located at root
-cp "${SHUNIT_REPO_NAME}/${SHUNIT_PROGRAM_NAME}" "$SHELLFUNCS_TEST_SCRIPTS_PATH"
+cp "${SHUNIT_REPO_NAME}/${SHUNIT_PROGRAM_NAME}" "$PWD"
 rm --recursive --force "$SHUNIT_REPO_NAME"
 
 exit 0
