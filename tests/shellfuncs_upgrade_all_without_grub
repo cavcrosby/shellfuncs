@@ -9,7 +9,7 @@ if [ -z "$(which apt-get)" ]; then
 	exit 0
 fi
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest shellfunc_loaded

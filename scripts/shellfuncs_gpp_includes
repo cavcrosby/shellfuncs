@@ -13,7 +13,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_gpp_includes () {
+shellfuncs_gpp_includes() {
     "$(gcc -print-prog-name=cc1plus)" -v -E - < /dev/null || return 1
     return 0
 }

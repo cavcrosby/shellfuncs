@@ -10,7 +10,7 @@ if [ "$(sudo --non-interactive true 2>&1)" != "" ]; then
     exit $REQUIRES_SUDOER_PASSWORD
 fi
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest shellfunc_loaded

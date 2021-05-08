@@ -18,7 +18,7 @@ SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME=""
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_install_tortoisehg () {
+shellfuncs_install_tortoisehg() {
     # NOTE: getting the PROGRAM_NAME currently is bash specfic
     # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
     SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME="${FUNCNAME[0]}"
@@ -115,7 +115,7 @@ _EOF_
     cd .. || return 0
 }
 
-_shellfuncs_install_tortoisehg_cleanup (){
+_shellfuncs_install_tortoisehg_cleanup(){
     echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: cleaning up, installed package(s) will not be uninstalled!"
     DESTINATION_DIR_BASENAME="$(basename "$DESTINATION_DIR_PATH")"
     [ -d "$DESTINATION_DIR_BASENAME" ] || cd ..

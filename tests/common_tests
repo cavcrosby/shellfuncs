@@ -3,7 +3,7 @@
 # These are common tests for all the 
 # shellfunc test scripts.
 
-shellfunc_loaded () {
+shellfunc_loaded() {
 	# is the shellfunc loaded into the shell session?
 	if [ -z "$DEBUG" ]; then
 		type "$PROGRAM_NAME" > /dev/null 2>&1
@@ -19,7 +19,7 @@ shellfunc_loaded () {
 	return 0
 }
 
-shellfunc_noninteractive_exec () {
+shellfunc_noninteractive_exec() {
 	# shellcheck disable=2086
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$PROGRAM_NAME" $ARGS
@@ -35,7 +35,7 @@ shellfunc_noninteractive_exec () {
 	return 0
 }
 
-shellfunc_interactive_exec () {
+shellfunc_interactive_exec() {
 	# shellcheck disable=2086
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$PROGRAM_NAME" $ARGS

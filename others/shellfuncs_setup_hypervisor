@@ -17,7 +17,7 @@ SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME="shellfuncs_setup_hypervisor"
 #   0 - cat success
 #   1 - cat error
 #######################################
-_shellfuncs_setup_hypervisor_usage () {
+_shellfuncs_setup_hypervisor_usage() {
 	cat << _EOF_
 Usage: $SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME [-h] [-a ANSWERS]
 
@@ -43,7 +43,7 @@ _EOF_
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_setup_hypervisor () {
+shellfuncs_setup_hypervisor() {
     # NOTE: opt/OPTIND are unset incase it has been defined previously;
     # getops will place the next option (e.g. o, t) into name;
     unset opt
@@ -94,7 +94,7 @@ shellfuncs_setup_hypervisor () {
 #   1 - general error
 #   2 - prompted exit from interactive menu
 #######################################
-_shellfuncs_setup_virtualbox () {
+_shellfuncs_setup_virtualbox() {
     VIRTUALBOX_DEB_REPO_URL="https://download.virtualbox.org/virtualbox/debian"
     # NOTE: from the virtualbox website:
     # Please install the same version extension pack as your installed version of VirtualBox.

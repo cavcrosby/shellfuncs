@@ -12,7 +12,7 @@
 #   0 - cat success
 #   1 - cat error
 #######################################
-usage () {
+usage() {
 	cat << _EOF_
 Usage: $PROGRAM_NAME [-d] [-h] [-t TEST_PROGRAM]
 

@@ -110,7 +110,7 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 # Outputs:
 #   ERROR: If shellfuncs repo could not be found
 #######################################
-load_shellfuncs () {
+load_shellfuncs() {
     if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
         # shellcheck source=/dev/null
 		for script_name in "${SHELLFUNCS_SCRIPTS_PATH}/"*; do
@@ -133,7 +133,7 @@ load_shellfuncs () {
 # Outputs:
 #   ERROR: If shellfuncs repo could not be found
 #######################################
-update_shellfuncs () {
+update_shellfuncs() {
     if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
         cd "$SHELLFUNCS_REPO_PATH" || exit
         git pull --quiet
@@ -177,7 +177,7 @@ _EOF_
 # Outputs:
 #   ERROR: If shellfuncs repo could not be found
 #######################################
-load_other_shellfuncs () {
+load_other_shellfuncs() {
     if [ -d "$SHELLFUNCS_REPO_PATH" ]; then
         # shellcheck source=/dev/null
         for script_name in "${SHELLFUNCS_OTHER_SCRIPTS_PATH}/"*; do

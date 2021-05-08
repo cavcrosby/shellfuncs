@@ -18,7 +18,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_new_machine_setup (){
+shellfuncs_new_machine_setup(){
     cat << _EOF_
 
 Scripted software installs:

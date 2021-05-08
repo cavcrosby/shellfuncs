@@ -4,7 +4,7 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest shellfunc_loaded
@@ -13,14 +13,14 @@ suite () {
 	suite_addTest test_hg_binary_exists
 }
 
-test_desktop_entry_exists () {
+test_desktop_entry_exists() {
 	if [ -f "${HOME}/.local/share/applications/tortoisehg.desktop" ]; then
 		return 0
 	fi
 	return 1
 }
 
-test_hg_binary_exists () {
+test_hg_binary_exists() {
 	DESTINATION_DIR_PATH="${HOME}/tortoisehg"
 	if [ -f "${DESTINATION_DIR_PATH}/thg" ]; then
 		return 0

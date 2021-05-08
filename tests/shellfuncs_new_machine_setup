@@ -4,7 +4,7 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-suite () {
+suite() {
 	# suite_addTest has to be used, else shunit2 will not
 	# execute any other shell functions in the env (this applies to common_tests)
 	suite_addTest shellfunc_loaded
@@ -14,7 +14,7 @@ suite () {
 	# Just to make sure really that from the menu script(s) can be invoked correctly.
 }
 
-test_exit () {
+test_exit() {
 	SELECTION_NUMBER=0
 	export ARGS=""
 	export STDIN_TO_PROGRAM="${SELECTION_NUMBER}\n"
@@ -22,7 +22,7 @@ test_exit () {
 	return 0
 }
 
-test_exit_invalid_selection () {
+test_exit_invalid_selection() {
 	# seriously doubt there will be this many selections
 	SELECTION_NUMBER=999
 	export ARGS=""

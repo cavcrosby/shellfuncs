@@ -15,7 +15,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_show_codium_exts_updates () {
+shellfuncs_show_codium_exts_updates() {
     for extension in $(codium --list-extensions --show-versions); do
         # codium returns an extension as extension@local_version (e.g. gerane.Theme-Boron@0.0.7)
         # the definition of 'codium extension' may differ in other scripts, the definition of this is above for this script

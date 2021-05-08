@@ -11,7 +11,7 @@
 #   0 - general success
 #   1 - general error
 #######################################
-shellfuncs_upgrade_all_without_grub () {
+shellfuncs_upgrade_all_without_grub() {
     sudo apt-get list --upgradable \
     | grep --invert-match grub \
     | cut --fields=1 --delimiter="/" \
