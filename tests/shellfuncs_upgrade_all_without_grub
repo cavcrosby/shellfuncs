@@ -4,6 +4,13 @@
 
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
+# check to see if a password be required to run sudo
+if [ "$(sudo --non-interactive true 2>&1)" != "" ]; then
+    echo "${PROGRAM_NAME}: must have sudoer password to run script!"
+	# shellcheck disable=2086
+    exit $REQUIRES_SUDOER_PASSWORD
+fi
+
 if [ -z "$(which apt-get)" ]; then
 	echo "${PROGRAM_NAME}: apt-get executable cannot found on PATH. $SKIPPING_TEST_MESSAGE"
 	exit 0
