@@ -16,7 +16,7 @@ usage() {
 	cat << _EOF_
 Usage: $PROGRAM_NAME [-d] [-h] [-t TEST_PROGRAM]
 
-This script handles the running of tests for $PROGRAM_NAME.
+This script handles the running of tests for the project.
 
 Options:
 	-d	allows tests to display all output (debug)

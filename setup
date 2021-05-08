@@ -1,7 +1,10 @@
 #!/bin/bash
 #
-# Small script that sets the stage for
-# building a Docker image with shellfuncs.
+# Small script that gathers resources
+# todo the following in this repo:
+#
+# 1. Build a Docker image for this project
+# 2. Run tests
 
 #######################################
 # Usage string for the program.
@@ -41,6 +44,7 @@ _EOF_
 #######################################
 clean() {
 	# checks are not needed because of --force option
+	rm --force "${SHELLFUNCS_TEST_SCRIPTS_PATH}/${SHUNIT_PROGRAM_NAME}"
 	rm --force "${PWD}/${SHUNIT_PROGRAM_NAME}"
 	return
 }
@@ -90,6 +94,7 @@ fi
 git clone --quiet "$SHUNIT_GIT_REPO_URL" "$SHUNIT_REPO_NAME"
 
 # assumes the 'shunit2' script is located at root
+cp "${SHUNIT_REPO_NAME}/${SHUNIT_PROGRAM_NAME}" "$SHELLFUNCS_TEST_SCRIPTS_PATH"
 cp "${SHUNIT_REPO_NAME}/${SHUNIT_PROGRAM_NAME}" "$PWD"
 rm --recursive --force "$SHUNIT_REPO_NAME"
 
