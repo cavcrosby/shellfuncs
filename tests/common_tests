@@ -5,7 +5,11 @@
 
 shellfunc_loaded () {
 	# is the shellfunc loaded into the shell session?
-	type "$PROGRAM_NAME"
+	if [ -z "$DEBUG" ]; then
+		type "$PROGRAM_NAME" > /dev/null 2>&1
+	else
+		type "$PROGRAM_NAME" 
+	fi
 	EXIT_STATUS="$?"
 	assertEquals "$PROGRAM_NAME is not in current shell session" 0 "$EXIT_STATUS"
 	
@@ -19,7 +23,11 @@ shellfunc_noninteractive_exec () {
 	# shellcheck disable=2086
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$PROGRAM_NAME" $ARGS
-	"$@"
+	if [ -z "$DEBUG" ]; then
+		"$@" > /dev/null 2>&1
+	else
+		"$@"
+	fi
 	EXIT_STATUS="$?"
 	# unsets program with args set above 
 	set --
@@ -31,7 +39,11 @@ shellfunc_interactive_exec () {
 	# shellcheck disable=2086
 	# NOTE2: We want word splitting for $ARGS, otherwise all args are a string!
 	set -- "$PROGRAM_NAME" $ARGS
-	echo "$STDIN_TO_PROGRAM" | "$@"
+	if [ -z "$DEBUG" ]; then
+		echo "$STDIN_TO_PROGRAM" | "$@" > /dev/null 2>&1
+	else
+		echo "$STDIN_TO_PROGRAM" | "$@"
+	fi
 	EXIT_STATUS="$?"
 	# unsets program with args set above 
 	set --

@@ -92,7 +92,7 @@ run_test_program() {
 unset opt
 while getopts "dht:" opt; do
 	case "$opt" in
-	"d")	DEBUG="true"
+	"d")	export DEBUG="true"
 			;;
 	"h")	usage
 			exit 0
@@ -127,11 +127,7 @@ do
 		"common_tests")											;;
 		"shunit2")												;;
 		*)														echo "${f}: running test(s)"
-																if [ -z "$DEBUG" ]; then
-																	run_test_program "$f" > /dev/null 2>&1
-																else
-																	run_test_program "$f"
-																fi
+																run_test_program "$f"
 																;;
 	esac
 done
