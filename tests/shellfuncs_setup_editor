@@ -16,7 +16,7 @@ suite() {
 	suite_addTest shellfunc_loaded
 	# NOTE: setup editor allows a user setup a GPG key to use
 	# with the editor and git. For now I will pass on testing this.
-	export ARGS="-a n"
+	export SHELLFUNC_ANSWERS="n"
 	suite_addTest shellfunc_interactive_exec
 }
 

@@ -5,37 +5,13 @@
 # Usage: Can be ran standalone, but shellfuncs_setup_hypervisor is called 
 # from 'shellfuncs_new_machine_setup' script in same repo.
 
-SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME="shellfuncs_setup_hypervisor"
-
-#######################################
-# Usage string for shellfuncs_setup_hypervisor.
-# Globals:
-#   SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME
-# Outputs:
-#   - usage heredoc string to stdout
-# Returns:
-#   0 - cat success
-#   1 - cat error
-#######################################
-_shellfuncs_setup_hypervisor_usage() {
-	cat << _EOF_
-Usage: $SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME [-h] [-a ANSWERS]
-
-Options:
-    -a  specify answers to read builtin in the program (in order that they ask)
-        (format should be as a csv, e.g. 'y,n,n')
-
-_EOF_
-	return
-}
-
 #######################################
 # Installs hypervisor of choice. This may include
 # a prompt in the future to select a hypervisor to install.
 # Globals:
 #   SUCCESS
 #   ERROR
-#   SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME
+#   SHELLFUNC_ANSWERS
 # Outputs:
 #   - Hypervisor function output to stdout
 #   - Additional success/error messages to stdout
@@ -44,28 +20,10 @@ _EOF_
 #   1 - general error
 #######################################
 shellfuncs_setup_hypervisor() {
-    # NOTE: opt/OPTIND are unset incase it has been defined previously;
-    # getops will place the next option (e.g. o, t) into name;
-    unset opt
-    unset OPTIND
-    while getopts "ha:" opt; do
-        case "$opt" in
-        "a")    ANSWERS="$(echo "$OPTARG" | tr ',' ' ')"
-                ;;
-        "h")	_shellfuncs_setup_hypervisor_usage
-                return 0
-                ;;
-        ":")    echo "${SHELLFUNCS_SETUP_HYPERVISOR_PROGRAM_NAME}: an argument is required for -- $OPTARG"
-                return 1
-                ;;
-        *)		return 1
-                ;;
-        esac
-    done
     HYPERVISOR="virtualbox"
     # shellcheck disable=2086
-    # we want globbing for $ANSWERS, will bind to positional parameters
-    _shellfuncs_setup_virtualbox $ANSWERS || EXIT_STATUS="$?"
+    # we want globbing for $SHELLFUNC_ANSWERS, will bind to positional parameters
+    _shellfuncs_setup_virtualbox $SHELLFUNC_ANSWERS || EXIT_STATUS="$?"
     if [ "$EXIT_STATUS" -eq 2 ]; then
         return 0
     elif [ "$EXIT_STATUS" -ne 0 ]; then
