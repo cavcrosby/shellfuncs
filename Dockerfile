@@ -34,6 +34,8 @@ ENV SHELL_DOTFILE_NAME "${SHELL_DOTFILE_NAME}"
 ENV REPO_TESTS_DIR_PATH "${GIT_REPOS_PATH}/${REPO_NAME}/${REPO_TESTS_DIR_NAME}"
 ENV INSTALL_PROGRAM_NAME "install"
 ENV SHUNIT_PROGRAM_NAME "shunit2"
+ENV SUDOER_PASSWORD 'Passw0rd!'
+ENV SUDOER_PASSWORD_CRYPT '$6$ZKvnNYIGchgNi76o$oP2vnnPSkCHfwuslCxVH0shhbsMFhDJwVBBpZp2Fw7AQzuQU65mCAqJ7z9i/1ns6qYowFRi5iG6oUQ6YawhjB1'
 # WD ==> WORKING_DIR...
 ENV WD "/${REPO_NAME}"
 WORKDIR "$WD"
@@ -41,12 +43,17 @@ WORKDIR "$WD"
 # NOTE: update image, fetch project dependencies, and create 
 # user/group in which to run tests with
 USER root
+# libgl1-mesa-glx needed running install_tortoisehg, reference:
+# https://stackoverflow.com/questions/55313610/importerror-libgl-so-1-cannot-open-shared-object-file-no-such-file-or-directo
 RUN apt-get update && apt-get install --assume-yes \
+    build-essential \
     git \
+    libgl1-mesa-glx \
     python3 \
     sudo
 RUN groupadd --gid "$GROUP_ID" "$GROUP_NAME" \
-    && useradd --create-home --home-dir "$USER_HOME" --uid "$USER_ID" --gid "$GROUP_ID" --shell /bin/bash "$USER_NAME"
+    && useradd --create-home --home-dir "$USER_HOME" --uid "$USER_ID" --gid "$GROUP_ID" --shell /bin/bash "$USER_NAME" --password "$SUDOER_PASSWORD_CRYPT" \
+    && echo "$USER_NAME ALL=(ALL:ALL) ALL" > "/etc/sudoers.d/${USER_NAME}"
 COPY "$INSTALL_PROGRAM_NAME" "$WD"
 
 # NOTE: setups the project repo, and runs tests at container runtime
@@ -58,4 +65,4 @@ WORKDIR "$REPO_TESTS_DIR_PATH"
 # NOTES: USER_HOME will not be available at container runtime, 
 # so just use HOME. This is because ARG env vars are only available
 # during the building of an image. 
-CMD ["/bin/bash", "-c", ". ${HOME}/${SHELL_DOTFILE_NAME} && ./shellfuncs_driver"]
+CMD ["/bin/bash", "-c", ". ${HOME}/${SHELL_DOTFILE_NAME} && ./shellfuncs_driver && ./shellfuncs_driver"]
