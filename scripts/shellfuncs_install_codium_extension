@@ -31,9 +31,9 @@ shellfuncs_install_codium_extension() {
     # mhutchie.git-graph is an example of a codium extension
     # usually formatted as <publisher>.<extension_name>, but I just referred to the entire/literal expression as extension
     IFS='.' read -r EXTENSION_PUBLISHER EXTENSION_NAME <<< "$EXTENSION"
-    OUTPUT_FILE_NAME_GZ="$EXTENSION_PUBLISHER.$EXTENSION_NAME-$EXTENSION_VERSION.gz"
-    OUTPUT_FILE_NAME="$EXTENSION_PUBLISHER.$EXTENSION_NAME-$EXTENSION_VERSION.vsix"
-    EXT_URL="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/$EXTENSION_PUBLISHER/vsextensions/$EXTENSION_NAME/$EXTENSION_VERSION/vspackage"
+    OUTPUT_FILE_NAME_GZ="${EXTENSION_PUBLISHER}.${EXTENSION_NAME-$EXTENSION_VERSION}.gz"
+    OUTPUT_FILE_NAME="${EXTENSION_PUBLISHER}.${EXTENSION_NAME}-${EXTENSION_VERSION}.vsix"
+    EXT_URL="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${EXTENSION_PUBLISHER}/vsextensions/${EXTENSION_NAME}/${EXTENSION_VERSION}/vspackage"
     if ! wget --quiet --output-document="$OUTPUT_FILE_NAME_GZ" "$EXT_URL"; then
         echo -e "$ERROR failed to download $EXTENSION!"
         return 1
