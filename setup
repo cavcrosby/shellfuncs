@@ -53,7 +53,7 @@ set -e
 PROGRAM_NAME=$(basename "$0")
 SHUNIT_GIT_REPO_URL="https://github.com/kward/shunit2"
 # ..._temp needed assuming repo_name = program_name
-SHUNIT_REPO_NAME="$(basename "$SHUNIT_GIT_REPO_URL")_temp"
+SHUNIT_REPO_NAME="$(basename "$SHUNIT_GIT_REPO_URL")-temp"
 SHUNIT_PROGRAM_NAME="shunit2"
 
 # NOTE: opt is unset incase it has been defined previously;
