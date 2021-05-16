@@ -210,6 +210,8 @@ _EOF_
     echo "#"
     echo "# Secrets used for testing"
     echo ""
+    echo "# NOTE: will permit quoting of parameters, because a 'sh' variant should"
+    echo "# be the interpreter of this dotfile"
 	echo "SUDOER_PASSWORD=\${SUDOER_PASSWORD}"
 } >> "$TEST_SCRIPTS_ENV_SECRETS_PATH"
 
