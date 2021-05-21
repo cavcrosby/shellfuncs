@@ -20,9 +20,9 @@ ARG SHELL_DOTFILE_NAME
 
 ARG BRANCH
 ARG COMMIT
-LABEL tech.conneracrosby.shellfuncs.branch="${BRANCH}"
-LABEL tech.conneracrosby.shellfuncs.commit="${COMMIT}"
-LABEL tech.conneracrosby.shellfuncs.vcs-repo="https://github.com/cavcrosby/shellfuncs"
+LABEL tech.cavcrosby.shellfuncs.branch="${BRANCH}"
+LABEL tech.cavcrosby.shellfuncs.commit="${COMMIT}"
+LABEL tech.cavcrosby.shellfuncs.vcs-repo="https://github.com/cavcrosby/shellfuncs"
 
 # y ==> yes, below env vars are needed for project automated install
 ENV SHELLFUNCS_AUTOMATED_INSTALL "y"
