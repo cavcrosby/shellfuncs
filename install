@@ -4,7 +4,7 @@
 # Small setup script that enables the
 # user to pull scripts as shell functions in their
 # shell session.
-# Usage: curl --silent https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
+# Usage: curl --silent https://raw.githubusercontent.com/cavcrosby/shellfuncs/main/install | bash
 
 set -e
 PROGRAM_NAME="install"
@@ -19,7 +19,7 @@ TEST_SCRIPTS_ENV_SECRETS=".test_env_secrets"
 YES="y"
 NO="n"
 # where this repo is located remotely (doesn't have to be github per say)
-REMOTE_REPO_URL='https://github.com/reap2sow1/shellfuncs'
+REMOTE_REPO_URL='https://github.com/cavcrosby/shellfuncs'
 # NOTES: SHELLFUNCS_AUTOMATED_INSTALL && SHELLFUNCS_REINSTALL go together.
 # Should either be empty (implied n) or take "y" ==> yes. Needs to be
 # commented out, otherwise will override any global env var version(s).

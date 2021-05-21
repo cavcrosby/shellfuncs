@@ -19,7 +19,7 @@ The install script can be piped into a different shell of choice, currently mine
 **NOTE:** Running through the installation will modify <code>.profile</code> to include functions used by **shellfuncs** to pull updates to its local repo location and source the scripts from 'scripts' folder. If this is not desired, modify the install script accordingly.
 
 ```shell
-curl --silent https://raw.githubusercontent.com/reap2sow1/shellfuncs/main/install | bash
+curl --silent https://raw.githubusercontent.com/cavcrosby/shellfuncs/main/install | bash
 ```
 
 ## License

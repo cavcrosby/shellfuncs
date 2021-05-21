@@ -22,7 +22,7 @@ ARG BRANCH
 ARG COMMIT
 LABEL tech.conneracrosby.shellfuncs.branch="${BRANCH}"
 LABEL tech.conneracrosby.shellfuncs.commit="${COMMIT}"
-LABEL tech.conneracrosby.shellfuncs.vcs-repo="https://github.com/reap2sow1/shellfuncs"
+LABEL tech.conneracrosby.shellfuncs.vcs-repo="https://github.com/cavcrosby/shellfuncs"
 
 # y ==> yes, below env vars are needed for project automated install
 ENV SHELLFUNCS_AUTOMATED_INSTALL "y"
