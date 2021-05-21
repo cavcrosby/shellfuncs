@@ -10,7 +10,7 @@ ARG USER_HOME="/home/${USER_NAME}"
 # NOTES: mainly needed to construct container filesystem path to tests
 # dir, as this may not be the same as the host. Defaults here should be
 # else where, in a centralized place.
-# TODO(conner@conneracrosby.tech): build-args here and else where could use some form of docker build wrapper with a build-args file format...maybe
+# TODO(cavcrosby): build-args here and else where could use some form of docker build wrapper with a build-args file format...maybe
 ARG REPO_NAME
 ARG REPO_TESTS_DIR_NAME
 
@@ -61,7 +61,7 @@ USER "$USER_NAME"
 RUN "./${INSTALL_PROGRAM_NAME}"
 COPY --chown="${USER_NAME}:${GROUP_NAME}" "$SHUNIT_PROGRAM_NAME" "$REPO_TESTS_DIR_PATH"
 WORKDIR "$REPO_TESTS_DIR_PATH"
-# TODO(conner@conneracrosby.tech): should probably not be hard coded this way, but this is project implementation specfic and I don't think the driver script is called out else where 
+# TODO(cavcrosby): should probably not be hard coded this way, but this is project implementation specfic and I don't think the driver script is called out else where 
 # NOTES: USER_HOME will not be available at container runtime, 
 # so just use HOME. This is because ARG env vars are only available
 # during the building of an image. 

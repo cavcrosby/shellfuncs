@@ -14,7 +14,7 @@ shellfunc_loaded() {
 	assertEquals "$PROGRAM_NAME is not in current shell session" 0 "$EXIT_STATUS"
 	
 	# NOTE: return 0 is needed at the moment because otherwise one failure is counted twice
-	# TODO(conner@conneracrosby.tech): monitor this issue to see if this gets fixed in future releases
+	# TODO(cavcrosby): monitor this issue to see if this gets fixed in future releases
 	# https://github.com/kward/shunit2/pull/140
 	return 0
 }

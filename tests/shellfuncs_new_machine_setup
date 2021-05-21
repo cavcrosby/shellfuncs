@@ -10,7 +10,7 @@ suite() {
 	suite_addTest shellfunc_loaded
 	suite_addTest test_exit
 	suite_addTest test_exit_invalid_selection
-	# TODO(conner@conneracrosby.tech): maybe find a way to add the choices as a test here?
+	# TODO(cavcrosby): maybe find a way to add the choices as a test here?
 	# Just to make sure really that from the menu script(s) can be invoked correctly.
 }
 

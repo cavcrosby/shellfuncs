@@ -83,6 +83,6 @@ _shellfuncs_setup_msmtp() {
         done
         "${EDITOR_ARR[@]}" "${HOME}/${MSMTP_DOTFILE_NAME}" || return 1
     fi
-    # TODO(conner@conneracrosby.tech): add another prompt for system configuration or user configuration file for msmtp, maybe
+    # TODO(cavcrosby): add another prompt for system configuration or user configuration file for msmtp, maybe
     return 0
 }

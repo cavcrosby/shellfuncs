@@ -2,5 +2,5 @@
 #
 # Status codes use throughout the test suite.
 
-# TODO(conner@conneracrosby.tech): maybe see if these can be used elsewhere? (e.g. shellfuncs themselves!)
+# TODO(cavcrosby): maybe see if these can be used elsewhere? (e.g. shellfuncs themselves!)
 REQUIRES_SUDOER_PASSWORD=2
