@@ -84,6 +84,7 @@ git clone --quiet "$REMOTE_REPO_URL" "$LOCAL_REPO_PATH" > /dev/null
 	echo "SHELLFUNCS_OTHER_SCRIPTS_PATH=$OTHER_SCRIPTS_PATH"
     echo "export SHELLFUNCS_TEST_SCRIPTS_PATH=$TEST_SCRIPTS_PATH"
 	echo "export SHELLFUNCS_TEST_SCRIPTS_ENV_PATH=$TEST_ENV_PATH"
+    echo "export SHELLFUNCS_TEST_SCRIPTS_ENV_SECRETS_PATH=$TEST_SCRIPTS_ENV_SECRETS_PATH"
 	if [ -z "$SUCCESS" ] || [ -z "$ERROR" ] || [ -z "$WARNING" ]; then
 		echo "# ANSI escape code sequences for status messages with character coloring"
 	fi
@@ -165,7 +166,7 @@ _EOF_
     # shellcheck disable=2016
 	echo '. "$SHELL_DOTFILE_PATH" > /dev/null 2>&1'
 	echo ""
-		cat << '_EOF_'
+	cat << '_EOF_'
 #######################################
 # Loads each 'shellfuncs' script into from 
 # SHELLFUNCS_OTHER_SCRIPTS_PATH the current shell session.
@@ -210,9 +211,7 @@ _EOF_
     echo "#"
     echo "# Secrets used for testing"
     echo ""
-    echo "# NOTE: will permit quoting of parameters, because a 'sh' variant should"
-    echo "# be the interpreter of this dotfile"
-	echo "SUDOER_PASSWORD=\${SUDOER_PASSWORD}"
+	echo "SUDOER_PASSWORD=\"\$SUDOER_PASSWORD\""
 } >> "$TEST_SCRIPTS_ENV_SECRETS_PATH"
 
 echo -e "$SUCCESS installation was successfull! Restart your shell session to pull in/update scripts"
