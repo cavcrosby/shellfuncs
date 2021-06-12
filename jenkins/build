@@ -1,0 +1,68 @@
+#!/bin/bash -xe
+# NOTES: do not rely on jenkins user global git config file
+# as future projects (this one included) will truncate the generic credential list.
+# What I expect is that cache will allow the program to stash its credentials in memory,
+# meaning it will no longer rely on the global config after the first time (assuming the timeout is adequate).
+# TODO(cavcrosby): see about re-implementing this part to allow usage of the global git configuration. Otherwise it will be more cumbersome to get the system user the repos needed/desired.
+
+git config --global credential.helper "cache --timeout=30"
+git config --global credential.username "$JENKINS_GITHUB_CREDENTIAL_USERNAME"
+
+# NOTE: the env var file name is ok, as long as we are not planning on
+# mv'ing it elsewhere
+# shellcheck disable=1091
+. "${PWD}/jenkins/.env"
+
+git clone "$SHELL_PROVISIONERS_REPO_URL" "$SHELL_PROVISIONERS_REPO_NAME"
+
+# shellcheck disable=1090
+. "${SHELL_PROVISIONERS_REPO_NAME}/${SHELL_PROVISIONERS_CONFIG_FILE_NAME}"
+
+# NOTES: if wget does not exist, then a error message will be thrown.
+# Additional, a non-zero status code will be returned, so it would
+# be redundant to wrap this in a if ! ... return 1; fi
+# TODO(cavcrosby): see if this is true else where, probably need to refactor a lot of code.
+cp "$EXPECTED_OVA_FILE_PATH" "$PWD"
+vboxmanage import "$EXPECTED_OVA_NAME" --vsys 0 --vmname "$EXPECTED_VM_NAME"
+vboxmanage startvm "$EXPECTED_VM_NAME" --type headless
+
+# NOTE: use this vs just sleeping for 'x' number of seconds, considering
+# the variation of time it takes to get a ssh connection
+connected_via_ssh=
+while [ -z "$connected_via_ssh" ]; do
+    if ssh -o "StrictHostKeyChecking no" "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" 'exit' > /dev/null 2>&1; then
+        connected_via_ssh="true"
+    else
+        sleep 10
+    fi
+done
+
+# NOTES: we want the heredoc to expand on the client. Writes to shell 
+# startup script so the next heredoc can be ran solely on the server.
+# It is assumed that the correct shell start up dotfile will contain
+# GIT_REPOS_PATH.
+# shellcheck disable=2087
+ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" << _EOF_
+    cd "./\${GIT_REPOS_PATH}/${PROJECT_REPO_NAME}" || exit 1
+    if [ -n "$GIT_TAG" ]; then
+        git checkout "$GIT_TAG"
+    fi
+    exit 0
+_EOF_
+
+# copy over install program, and run test case's driver
+scp "$INSTALL_PROGRAM_NAME" "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}:/home/${VM_USER_NAME}"
+ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" << '_EOF_'
+    # run test's driver twice
+    cd "$SHELLFUNCS_TEST_SCRIPTS_PATH" || exit 1
+    ./shellfuncs_driver
+    ./shellfuncs_driver
+_EOF_
+
+vboxmanage controlvm "$EXPECTED_VM_NAME" poweroff
+
+# wait a few seconds before attempting to delete the VM
+sleep 15
+vboxmanage unregister "$EXPECTED_VM_NAME" --delete
+
+exit 0
