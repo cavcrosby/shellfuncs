@@ -87,9 +87,6 @@ run_test_program() {
 # loads test env needed to run tests
 . "$SHELLFUNCS_TEST_SCRIPTS_ENV_PATH"
 
-echo "some funny code laying around...boo!"
-return 0
-
 # NOTE: opt is unset incase it has been defined previously;
 # getops will place the next option (e.g. o, t) into name;
 unset opt

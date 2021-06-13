@@ -43,11 +43,14 @@ done
 # the shell startup file should more than likly be '.profile' and it
 # should be read in before executing the following below this comment.
 eval "$(ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" bash --login -i -c 'printenv' | grep '^GIT_REPOS_PATH=')"
+# TODO(cavcrosby): error checking could be better, e.g. GIT_TAG could possible not exist
 # shellcheck disable=2087
 ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" <<- _EOF_
     cd "${GIT_REPOS_PATH}/${PROJECT_REPO_NAME}" || exit 1
+    git pull "$SHELLFUNCS_REPO_URL" "$DEFAULT_SHELLFUNCS_BRANCH"
     if [ -n "$GIT_TAG" ]; then
-        git checkout "$GIT_TAG"
+        git checkout --quiet "$GIT_TAG"
+        echo "!!! Checkout $PROJECT_REPO_NAME at $GIT_TAG !!!"
     fi
     exit 0
 _EOF_
