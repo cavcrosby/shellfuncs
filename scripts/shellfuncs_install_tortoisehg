@@ -41,6 +41,11 @@ shellfuncs_install_tortoisehg() {
         mercurial
         qscintilla
     )
+    # current work around to deal with test driver being ran more than once
+    if [ -d "$DESTINATION_DIR_PATH" ]; then
+        echo "${SHELLFUNCS_INSTALL_TORTOISEHG_PROGRAM_NAME}: tortoisehg appears to be already installed"
+        return 0
+    fi
     # make a folder to hold the tortoise source
     mkdir "$DESTINATION_DIR_PATH" || return 1
     ! cd "$DESTINATION_DIR_PATH" && _shellfuncs_install_tortoisehg_cleanup && return 1

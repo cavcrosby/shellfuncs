@@ -47,7 +47,6 @@ eval "$(ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" bash --login -i -c 'pri
 # shellcheck disable=2087
 ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" <<- _EOF_
     cd "${GIT_REPOS_PATH}/${PROJECT_REPO_NAME}" || exit 1
-    git pull "$SHELLFUNCS_REPO_URL" "$DEFAULT_SHELLFUNCS_BRANCH"
     if [ -n "$GIT_TAG" ]; then
         git checkout --quiet "$GIT_TAG"
         echo "!!! Checkout $PROJECT_REPO_NAME at $GIT_TAG !!!"
@@ -57,21 +56,26 @@ _EOF_
 
 # run test suite's driver
 # TODO(cavcrosby): see about reporting to Jenkins a non-zero status code when any of the test cases fail (that is at the end having ran the test cases).
-ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" <<- '_EOF_'
+if ! ssh "${VM_USER_NAME}@${SHELLFUNCS_VM_IPV4_ADDR}" <<- '_EOF_'; then
     # run test's driver twice
     cd "$SHELLFUNCS_TEST_SCRIPTS_PATH" || exit 1
     # turn off colored output from shunit2
     SHUNIT_COLOR="none"
     export SHUNIT_COLOR
-    ./shellfuncs_driver
-    ./shellfuncs_driver
+    if ! ./shellfuncs_driver; then exit 1; fi
+    if ! ./shellfuncs_driver; then exit 1; fi
     exit 0
 _EOF_
-
+    ALL_TESTS_PASSED="false"
+fi
 # cleanup
 vboxmanage controlvm "$EXPECTED_VM_NAME" poweroff
 # wait a few seconds before attempting to delete the VM
 sleep 15
 vboxmanage unregistervm "$EXPECTED_VM_NAME" --delete
 
-exit 0
+if [ -z "$ALL_TESTS_PASSED" ]; then
+    exit 0
+fi
+
+exit 1
