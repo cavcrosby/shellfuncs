@@ -115,7 +115,7 @@ while getopts "dht:" opt; do
 done
 
 # for now the default will be to run all test programs
-# NOTE: globbing pattern should be generalized with exceptions
+# NOTE: field separation pattern should be generalized with exceptions
 # being handled in the below case statement
 if [ -z "$TEST_PROGRAMS" ]; then
 	TEST_PROGRAMS="*"

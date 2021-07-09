@@ -22,7 +22,7 @@
 shellfuncs_setup_hypervisor() {
     HYPERVISOR="virtualbox"
     # shellcheck disable=2086
-    # we want globbing for $SHELLFUNC_ANSWERS, will bind to positional parameters
+    # we want field separation for $SHELLFUNC_ANSWERS, will bind to positional parameters
     _shellfuncs_setup_virtualbox $SHELLFUNC_ANSWERS || EXIT_STATUS="$?"
     if [ "$EXIT_STATUS" -eq 2 ]; then
         return 0

@@ -22,7 +22,7 @@
 shellfuncs_setup_editor() {
     EDITOR="vscodium"
     # shellcheck disable=2086
-    # we want globbing for $SHELLFUNC_ANSWERS, will bind to positional parameters
+    # we want field separation for $SHELLFUNC_ANSWERS, will bind to positional parameters
     if ! _shellfuncs_setup_vscodium $SHELLFUNC_ANSWERS; then
         echo -e "$ERROR failed to install $EDITOR!"
         return 1
